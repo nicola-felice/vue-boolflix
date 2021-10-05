@@ -4,7 +4,7 @@
     <div>titolo originale:<span>{{filmData.original_title}}</span></div>
     <div>
       paese:
-      <country-flag v-if="(filmData.production_countries != '')" class="flag" :country='filmData.production_countries' :size='size'/>
+      <country-flag v-if=" (filmData.production_countries != '') " class="flag" :country='filmData.production_countries' :size='size'/>
       <span v-else>--info non disponibile--</span>
     </div>
     <div>voto:<span>{{filmData.vote_average}}</span></div>
