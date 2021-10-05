@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <section>
     <ul>
-      <FilmCard v-for="(elm, index) in filmsList" :key="index" :filmData="elm" />
+      <FilmCard v-for="(elm, index) in filmsList" :key="index" :film-data="elm" />
     </ul>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -34,14 +34,39 @@ export default {
     }
   },
   methods: {
-    filmsRequest(text) {
-      axios.get('https://api.themoviedb.org/3/search/movie?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
+    filmsRequest: async function(text) {
+      let res = await axios.get('https://api.themoviedb.org/3/search/movie?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
         params: {
           query: text,
         }
-      }).then( res => {
-        this.filmsList = res.data.results;
       });
+
+      let list = res.data.results;
+
+      await Promise.all(list.map(async (elm) => {
+        let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
+        
+        const productionCountries = resp.data.production_countries[0];
+
+        if ( productionCountries == undefined ) {
+          elm.production_countries = ""; 
+        } else {
+          elm.production_countries = productionCountries.iso_3166_1;
+        }
+      }));
+
+      // for await (const elm of list) {
+      //   let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
+
+      //   const productionCountries = resp.data.production_countries[0];
+
+      //   if ( productionCountries == undefined ) {
+      //     elm.production_countries = ""; 
+      //   } else {
+      //     elm.production_countries = productionCountries.iso_3166_1;
+      //   }
+      // }
+      this.filmsList = list;
     }
   },
 }
