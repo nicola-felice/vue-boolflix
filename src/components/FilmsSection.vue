@@ -1,21 +1,20 @@
 <template>
   <div>
     <ul>
-      <li v-for="(elm, index) in filmsList" :key="index" class="filmCard">
-        <div>titolo:<span>{{elm.title}}</span></div>
-        <div>titolo originale:<span>{{elm.original_title}}</span></div>
-        <div>lingua originale:<span>{{elm.original_language}}</span></div>
-        <div>voto:<span>{{elm.vote_average}}</span></div>
-      </li>
+      <FilmCard v-for="(elm, index) in filmsList" :key="index" :filmData="elm" />
     </ul>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import FilmCard from './FilmCard.vue';
 
 export default {
   name: 'FilmsSection',
+  components: {
+    FilmCard,
+  },
   props: ['searchText'],
   data() {
     return {
@@ -50,10 +49,4 @@ export default {
 
 <style scoped lang="scss">  
 
-  li {
-    margin: 1rem 0;
-  }
-  span {
-    margin-left: 1rem;
-  }
 </style>
