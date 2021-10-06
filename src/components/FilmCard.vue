@@ -1,28 +1,39 @@
 <template>
-  <li class="filmCard">
+  <li class="film_card">
     <div>titolo:<span>{{(filmData.title)? filmData.title : filmData.name}}</span></div>
     <div>titolo originale:<span>{{(filmData.original_title)? filmData.original_title : filmData.original_name}}</span></div>
-    <div class="coverImage" :style="`background-image: url(${require('../assets/sad.png')});`"><img :src="imageSource()" alt=""></div>
-    <div>
+    <div class="poster_image" :style="`background-image: url(${require('../assets/sad.png')});`">
+      <img :src="imageSource()" alt="">
+    </div>
+    <div class="country_flag">
       paese:
       <country-flag v-if="isFlagVisible()" class="flag" :country='countryFlagCode()' :size='size'/>
       <span v-else>--info non trovata--</span>
     </div>
-    <div>voto:<span>{{filmData.vote_average}}</span></div>
+    <div class="vote_stars">
+      voto:
+      <span>
+        <font-awesome-icon class="star" :class="(isStarGolden(id))? 'golden' : ''" v-for="id in 5" :key="id" :icon="starIcon" />
+      </span>
+    </div>
   </li>
 </template>
 
 <script>
 import CountryFlag from 'vue-country-flag';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 export default {
-  name: 'FilmCard',
+  name: 'FilmCard', 
   components: {
     CountryFlag,
+    FontAwesomeIcon
   },
   data() {
     return{
       sizeFlags: 'medium',
+      starIcon: faStar,
     }
   },
   props:['filmData', 'size'],
@@ -56,6 +67,14 @@ export default {
       } else {
         return `https://image.tmdb.org/t/p/w500/${this.filmData.poster_path}`;
       }
+    },
+    isStarGolden(id) {
+      // return true if id is less or = to vote average (in a scale 1 to 5)
+      const stars = Math.round(this.filmData.vote_average / 2);
+      if ( id < stars ) {
+        return true;
+      }
+      return false;
     }
   }
 }
@@ -79,7 +98,7 @@ export default {
     margin-left: 1rem;
   }
 
-  .coverImage {
+  .poster_image {
     height: 200px;
     width: 150px;
     background-color: #888888;
@@ -92,6 +111,14 @@ export default {
       height: 100%;
       object-fit: cover;
       object-position: center;
+    }
+
+
+  }
+  .star {
+    color: #8d8c8c;
+    &.golden  {
+    color: #eece00;
     }
   }
 </style>
