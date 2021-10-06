@@ -1,6 +1,11 @@
 <template>
   <section>
     <ul>
+      <li v-if="searchText != ''">TV SERIES</li>
+      <FilmCard v-for="(elm, index) in tvSeriesList" :key="index" :film-data="elm" />
+    </ul>
+    <ul>
+      <li v-if="searchText != ''">FILMS</li>
       <FilmCard v-for="(elm, index) in filmsList" :key="index" :film-data="elm" />
     </ul>
   </section>
@@ -19,6 +24,7 @@ export default {
   data() {
     return {
       filmsList: [],
+      tvSeriesList: [],
     }
   },
   watch: {
@@ -30,19 +36,23 @@ export default {
       } else {
         // else make a request for the data
         this.filmsRequest(val);
+        this.tvSeriesRequest(val);
       }
     }
   },
   methods: {
     filmsRequest: async function(text) {
+      // get the films list
       let res = await axios.get('https://api.themoviedb.org/3/search/movie?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
         params: {
           query: text,
         }
       });
-
       let list = res.data.results;
 
+      // when you have the films list
+      // request for the production country for each film
+      // then add the property to list
       await Promise.all(list.map(async (elm) => {
         let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
 
@@ -55,11 +65,22 @@ export default {
         }
       }));
       this.filmsList = list;
-    }
+    },
+    tvSeriesRequest: async function(text) {
+      // with the same input search also for tv series
+      let res = await axios.get('https://api.themoviedb.org/3/search/tv?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
+        params: {
+          query: text,
+        }
+      });
+      this.tvSeriesList = res.data.results;
+    },
   },
 }
 </script>
 
 <style scoped lang="scss">  
-
+section {
+  display: flex;
+}
 </style>
