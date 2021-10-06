@@ -2,9 +2,10 @@
   <li class="filmCard">
     <div>titolo:<span>{{(filmData.title)? filmData.title : filmData.name}}</span></div>
     <div>titolo originale:<span>{{(filmData.original_title)? filmData.original_title : filmData.original_name}}</span></div>
+    <div class="coverImage" :style="`background-image: url(${require('../assets/sad.png')});`"><img :src="imageSource()" alt=""></div>
     <div>
       paese:
-      <country-flag v-if="isFlagVisible()" class="flag" :country='countryFlag()' :size='size'/>
+      <country-flag v-if="isFlagVisible()" class="flag" :country='countryFlagCode()' :size='size'/>
       <span v-else>--info non trovata--</span>
     </div>
     <div>voto:<span>{{filmData.vote_average}}</span></div>
@@ -35,7 +36,7 @@ export default {
       }
       return false;
     },
-    countryFlag() {
+    countryFlagCode() {
       // if flag is not visible => return null
       if ( !this.isFlagVisible() ) {
         return null;
@@ -48,13 +49,21 @@ export default {
         return this.filmData.production_countries;
       }
     },
+    imageSource() {
+      if ( this.filmData.poster_path == null ) {
+        console.warn(`image not found`);
+        return "#";
+      } else {
+        return `https://image.tmdb.org/t/p/w500/${this.filmData.poster_path}`;
+      }
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
   li {
-    margin: 1rem 0;
+    margin: 2rem 0;
 
     div {
       display: flex;
@@ -68,5 +77,21 @@ export default {
   }
   span {
     margin-left: 1rem;
+  }
+
+  .coverImage {
+    height: 200px;
+    width: 150px;
+    background-color: #888888;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
   }
 </style>
