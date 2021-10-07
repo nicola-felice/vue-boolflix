@@ -97,6 +97,10 @@ export default {
           elm.production_countries = productionCountries.iso_3166_1;
         }
       }));
+
+      // rimuovi dalla lista quelli senza immagine
+      
+
       this.filmsList = list;
     },
     tvSeriesRequest: async function(text) {

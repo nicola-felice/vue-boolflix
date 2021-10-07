@@ -19,7 +19,8 @@
           id="search_icon" class="searchBarElm" :icon="searchIcon" />
 
         <input :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' "
-          v-model="searchFilmInput" id="input_search" ref="input_search" 
+          v-model="searchFilmInput" id="input_search" ref="input_search"
+          @keyup.enter="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
           class="searchBarElm" type="text" placeholder="cerca titolo film">
           
         <button :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' " 
