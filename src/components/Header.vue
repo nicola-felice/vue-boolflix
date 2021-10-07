@@ -101,6 +101,7 @@ export default {
       text-decoration: none;
       margin: 0 .5rem;
       font-weight: 500;
+      font-size: .95rem;
     }
     a.active {
       color: white;

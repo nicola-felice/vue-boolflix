@@ -1,6 +1,5 @@
 <template>
   <section>
-    
     <h3 v-if="searchText != ''">TV SERIES</h3>
     <div class="container_relative">
       <div class="films_list_wrapper" @scroll="checkArrowVisibility">
@@ -12,7 +11,7 @@
           <FilmCard v-for="(elm, index) in tvSeriesList" :key="index" :film-data="elm" />
         </ul>
 
-        <div @click="scrollRight" class="arrow_right" :class="(filmsList.length <= 6)? 'hide' : ''">
+        <div @click="scrollRight" class="arrow_right" :class="(tvSeriesList.length <= 6)? 'hide' : ''">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>        
       </div>
@@ -30,6 +29,41 @@
         </ul>
 
         <div @click="scrollRight" class="arrow_right" :class="(filmsList.length <= 6)? 'hide' : ''">
+          <font-awesome-icon class="icon" :icon="arrowR" />
+        </div>
+      </div>
+    </div>
+
+    <!-- trending -->
+    <h3>TRENDING TV SERIES</h3>
+    <div class="container_relative">
+      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
+        <div @click="scrollLeft" class="arrow_left">
+          <font-awesome-icon class="icon" :icon="arrowL" />
+        </div>
+
+        <ul>
+          <FilmCard v-for="(elm, index) in trendingTvSeries" :key="index" :film-data="elm" />
+        </ul>
+
+        <div @click="scrollRight" class="arrow_right">
+          <font-awesome-icon class="icon" :icon="arrowR" />
+        </div>        
+      </div>
+    </div>
+
+    <h3>TRENDING FILMS</h3>
+    <div class="container_relative">
+      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
+        <div @click="scrollLeft" class="arrow_left">
+          <font-awesome-icon class="icon" :icon="arrowL" />
+        </div>
+
+        <ul>
+          <FilmCard v-for="(elm, index) in trendingMovies" :key="index" :film-data="elm" />
+        </ul>
+
+        <div @click="scrollRight" class="arrow_right">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>
       </div>
@@ -54,6 +88,8 @@ export default {
     return {
       filmsList: [],
       tvSeriesList: [],
+      trendingMovies: [],
+      trendingTvSeries: [],
       // icons
       arrowR: faChevronRight,
       arrowL: faChevronLeft,
@@ -98,7 +134,7 @@ export default {
         }
       }));
 
-      // rimuovi dalla lista quelli senza immagine
+      // remove those with no image
       list = list.filter( elm => elm.poster_path != null );
 
       this.filmsList = list;
@@ -112,7 +148,7 @@ export default {
       });
 
       let list = res.data.results;
-      // rimuovi dalla lista quelli senza immagine
+      // remove those with no image
       list = list.filter( elm => elm.poster_path != null );
 
       this.tvSeriesList = list;
@@ -169,6 +205,38 @@ export default {
         element.querySelector(".arrow_left").classList.remove("show");
       }
     },
+    suggestedSeriesRequets: async function() {
+      let res = await axios.get('https://api.themoviedb.org/3/trending/tv/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
+      let list = res.data.results;
+      // remove those with no image
+      list = list.filter( elm => elm.poster_path != null );
+      this.trendingTvSeries = list;
+    },
+    suggestedMoviesRequest: async function() {
+      let res = await axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
+      let list = res.data.results;
+
+      await Promise.all(list.map(async (elm) => {
+        let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
+
+        const productionCountries = resp.data.production_countries[0];
+
+        if ( productionCountries == undefined ) {
+          elm.production_countries = ""; 
+        } else {
+          elm.production_countries = productionCountries.iso_3166_1;
+        }
+      }));
+
+      // remove those with no image
+      list = list.filter( elm => elm.poster_path != null );
+
+      this.trendingMovies = list;
+    }
+  },
+  mounted() {
+    this.suggestedSeriesRequets();
+    this.suggestedMoviesRequest();
   }
 }
 </script>
@@ -181,7 +249,6 @@ export default {
     }
     .films_list_wrapper {
       overflow: auto;
-      // margin: .75rem 0 4rem 0;
       margin-bottom: 2rem;
       overflow-y: hidden;
       scroll-behavior: smooth;
@@ -189,32 +256,33 @@ export default {
       .arrow_right {
         position: absolute;
         z-index: 9999;
-        height: 35%;
+        height: 60px;
         top: 50%;
         transform: translateY(-50%);
-        width: 50px;
+        width: 60px;
         background-color: rgba(0, 0, 0, 0.808);
         cursor: pointer;
+        border-radius: 50%;
 
         display: flex;
         justify-content: center;
         align-items: center;
         .icon {
           color: rgba(255, 255, 255, 0.815);
-          font-size: 2rem;
+          font-size: 2.5rem;
         }
       }
       .arrow_left {
         left: 0;
-        border-radius: 0 1rem 1rem 0;
         display: none;
+        padding-right: .25rem;
         &.show {
           display: flex;
         }
       }
       .arrow_right {
         right: 0;
-        border-radius: 1rem 0 0 1rem;
+        padding-left: .25rem;
         &.hide {
           display: none;
         }
