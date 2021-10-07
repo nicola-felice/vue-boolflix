@@ -1,21 +1,37 @@
 <template>
-  <li class="film_card">
-    <div>titolo:<span>{{(filmData.title)? filmData.title : filmData.name}}</span></div>
-    <div>titolo originale:<span>{{(filmData.original_title)? filmData.original_title : filmData.original_name}}</span></div>
-    <div class="poster_image" :style="`background-image: url(${require('../assets/sad.png')});`">
-      <img :src="imageSource()" alt="">
+  <li>
+    <div id="film_card">
+      <div id="front_card">
+        <img class="poster" :src="imageSource()" alt="">
+      </div>
+
+      <div id="back_card">
+        <div>
+          <h4>Titolo:</h4>
+          <div class="title">{{(filmData.title)? filmData.title : filmData.name}}</div>          
+        </div>
+
+        <div>
+          <h4>Titolo originale:</h4>
+          <div class="title">{{(filmData.original_title)? filmData.original_title : filmData.original_name}}</div>  
+        </div>
+
+        <div class="overview">
+          <h4>Overview:</h4>
+          <p>{{filmData.overview}}</p>
+        </div>
+
+        <div class="vote_stars">
+          <font-awesome-icon class="star" :class="(isStarGolden(id))? 'golden' : ''" v-for="id in 5" :key="id" :icon="starIcon" />
+        </div>
+
+        <div class="country_flag">
+          <country-flag class="flag" :country='countryFlagCode()' :size='size'/>
+        </div>
+      </div>      
     </div>
-    <div class="country_flag">
-      paese:
-      <country-flag v-if="isFlagVisible()" class="flag" :country='countryFlagCode()' :size='size'/>
-      <span v-else>--info non trovata--</span>
-    </div>
-    <div class="vote_stars">
-      voto:
-      <span>
-        <font-awesome-icon class="star" :class="(isStarGolden(id))? 'golden' : ''" v-for="id in 5" :key="id" :icon="starIcon" />
-      </span>
-    </div>
+
+
   </li>
 </template>
 
@@ -50,7 +66,7 @@ export default {
     countryFlagCode() {
       // if flag is not visible => return null
       if ( !this.isFlagVisible() ) {
-        return null;
+        return "";
       }
       // else return the correct string to display the flag
       if ( this.filmData.origin_country != undefined && this.filmData.origin_country.length > 0 ) {
@@ -62,7 +78,6 @@ export default {
     },
     imageSource() {
       if ( this.filmData.poster_path == null ) {
-        console.warn(`image not found`);
         return "#";
       } else {
         return `https://image.tmdb.org/t/p/w500/${this.filmData.poster_path}`;
@@ -82,43 +97,75 @@ export default {
 
 <style scoped lang="scss">
   li {
-    margin: 2rem 0;
+    margin: .15rem;
+    color: white;
+    #film_card {
+      height: 300px;
+      width: 200px;
+      position: relative;
+      border-radius: .35rem;
+      overflow: hidden;
+      #front_card {
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        bottom: 0;
+      }
+      &:hover {
+        #front_card {
+          z-index: -99;
+        }
+      }
+      #back_card {
+        background-color: black;
+        height: 100%;
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
 
-    div {
-      display: flex;
-      align-items: center;
-    }
-
-    .flag {
-      display: inline-block;
-      margin-left: 0;
+        // position: absolute;
+        // z-index: 1;
+        .vote_stars {
+          padding-top: 2rem;
+          margin-top: auto;
+        }
+      }
     }
   }
-  span {
-    margin-left: 1rem;
+
+  img.poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .flag {
+    display: inline-block;
+    margin-left: 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  h4 {
+    color: rgb(161, 161, 161);
+    font-size: .9rem;
+    font-weight: 400;
+    margin: .3rem 0 .25rem 0;
+  }
+  .title {
+    font-weight: 500;
   }
 
-  .poster_image {
-    height: 200px;
-    width: 150px;
-    background-color: #888888;
-    background-size: 50%;
-    background-repeat: no-repeat;
-    background-position: center;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-
-
-  }
   .star {
     color: #8d8c8c;
     &.golden  {
     color: #eece00;
     }
+  }
+  
+  ::marker {
+    color: transparent;
   }
 </style>

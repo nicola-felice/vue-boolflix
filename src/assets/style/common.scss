@@ -1,0 +1,24 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 0 3vw;
+  margin: auto;
+  max-width: 1600px;
+}
+button,
+input {
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #141414;
+}
+
+img {
+  display: block;
+}

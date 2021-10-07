@@ -1,30 +1,62 @@
 <template>
   <section>
-    <ul>
-      <li v-if="searchText != ''">TV SERIES</li>
-      <FilmCard v-for="(elm, index) in tvSeriesList" :key="index" :film-data="elm" />
-    </ul>
-    <ul>
-      <li v-if="searchText != ''">FILMS</li>
-      <FilmCard v-for="(elm, index) in filmsList" :key="index" :film-data="elm" />
-    </ul>
+    
+    <h3 v-if="searchText != ''">TV SERIES</h3>
+    <div class="container">
+      <div class="films_list_wrapper">
+        <div v-if="searchText != ''" @click="scrollLeft" class="arrow_left">
+          <font-awesome-icon class="icon" :icon="arrowL" />
+        </div>
+
+        <ul>
+          <FilmCard v-for="(elm, index) in tvSeriesList" :key="index" :film-data="elm" />
+        </ul>
+
+        <div v-if="searchText != ''" @click="scrollRight" class="arrow_right">
+          <font-awesome-icon class="icon" :icon="arrowR" />
+        </div>        
+      </div>
+    </div>
+
+    <h3 v-if="searchText != ''">FILMS</h3>
+    <div class="container">
+      <div class="films_list_wrapper">
+        <div v-if="searchText != ''" @click="scrollLeft" class="arrow_left">
+          <font-awesome-icon class="icon" :icon="arrowL" />
+        </div>
+
+        <ul>
+          <FilmCard v-for="(elm, index) in filmsList" :key="index" :film-data="elm" />
+        </ul>
+
+        <div v-if="searchText != ''" @click="scrollRight" class="arrow_right">
+          <font-awesome-icon class="icon" :icon="arrowR" />
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 import axios from 'axios';
 import FilmCard from './FilmCard.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default {
   name: 'FilmsSection',
   components: {
     FilmCard,
+    FontAwesomeIcon
   },
   props: ['searchText'],
   data() {
     return {
       filmsList: [],
       tvSeriesList: [],
+      // icons
+      arrowR: faChevronRight,
+      arrowL: faChevronLeft,
     }
   },
   watch: {
@@ -33,6 +65,7 @@ export default {
       if ( val == "" ) {
         // if the input is "", empty the list 
         this.filmsList = [];
+        this.tvSeriesList = [];
       } else {
         // else make a request for the data
         this.filmsRequest(val);
@@ -75,12 +108,81 @@ export default {
       });
       this.tvSeriesList = res.data.results;
     },
+    scrollRight(ev) {
+      // console.log(ev.target.id);
+      let element = ev.target;
+      // fai un while verificando l'id del parent node per prendere la lista di film
+      while ( !element.classList.contains('films_list_wrapper') ) {
+        element = element.parentNode;
+      }
+      element.scrollLeft = (element.scrollLeft) + 1000;
+    },
+    scrollLeft(ev) {
+      // console.log(ev.target.id);
+      let element = ev.target;
+      // fai un while verificando l'id del parent node per prendere la lista di film
+      while ( !element.classList.contains('films_list_wrapper') ) {
+        element = element.parentNode;
+      }
+      element.scrollLeft = (element.scrollLeft) - 1000;
+    }
   },
 }
 </script>
 
 <style scoped lang="scss">  
-section {
-  display: flex;
-}
+  section {
+    .container {
+      position: relative;
+    }
+    .films_list_wrapper {
+      overflow: auto;
+      margin: .75rem 0 4rem 0;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      .arrow_left,
+      .arrow_right {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        bottom: 0;
+        width: 70px;
+        background-color: rgba(0, 0, 0, 0.699);
+        cursor: pointer;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .icon {
+          color: rgba(255, 255, 255, 0.815);
+          font-size: 3rem;
+        }
+      }
+      .arrow_left {
+        left: 0;
+      }
+      .arrow_right {
+        right: 0;
+      }
+      ul {
+        display: flex;
+        align-items: center ;
+      }
+    }
+  }
+
+  h3 {
+    color: white;
+    margin-left: 3rem;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .films_list_wrapper::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .films_list_wrapper {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  } 
 </style>
