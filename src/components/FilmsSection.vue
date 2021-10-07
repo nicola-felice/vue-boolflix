@@ -2,9 +2,9 @@
   <section>
     
     <h3 v-if="searchText != ''">TV SERIES</h3>
-    <div class="container">
-      <div class="films_list_wrapper">
-        <div v-if="searchText != ''" @click="scrollLeft" class="arrow_left">
+    <div class="container_relative">
+      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
+        <div @click="scrollLeft" class="arrow_left">
           <font-awesome-icon class="icon" :icon="arrowL" />
         </div>
 
@@ -12,16 +12,16 @@
           <FilmCard v-for="(elm, index) in tvSeriesList" :key="index" :film-data="elm" />
         </ul>
 
-        <div v-if="searchText != ''" @click="scrollRight" class="arrow_right">
+        <div @click="scrollRight" class="arrow_right" :class="(filmsList.length <= 6)? 'hide' : ''">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>        
       </div>
     </div>
 
     <h3 v-if="searchText != ''">FILMS</h3>
-    <div class="container">
-      <div class="films_list_wrapper">
-        <div v-if="searchText != ''" @click="scrollLeft" class="arrow_left">
+    <div class="container_relative">
+      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
+        <div @click="scrollLeft" class="arrow_left">
           <font-awesome-icon class="icon" :icon="arrowL" />
         </div>
 
@@ -29,7 +29,7 @@
           <FilmCard v-for="(elm, index) in filmsList" :key="index" :film-data="elm" />
         </ul>
 
-        <div v-if="searchText != ''" @click="scrollRight" class="arrow_right">
+        <div @click="scrollRight" class="arrow_right" :class="(filmsList.length <= 6)? 'hide' : ''">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>
       </div>
@@ -108,31 +108,65 @@ export default {
       });
       this.tvSeriesList = res.data.results;
     },
+    checkArrowVisibility(ev) {
+      let element = ev.target;
+
+      // show arrow left
+      element.querySelector(".arrow_left").classList.add("show");
+      // show arrow right
+      element.querySelector(".arrow_right").classList.remove("hide");
+
+      // if you cannot scroll more to the right => hide arrow_right
+      const screenWidth = document.querySelector("html").clientWidth;
+      if ( (element.scrollLeft + 200) >= (element.scrollWidth - screenWidth - 10) ) {
+        element.querySelector(".arrow_right").classList.add("hide");
+      }
+      // if you cannot scroll more to the left => hide arrow_left
+      if ( (element.scrollLeft - 200) <= 0 ) {
+        element.querySelector(".arrow_left").classList.remove("show");
+      }
+    },
     scrollRight(ev) {
-      // console.log(ev.target.id);
       let element = ev.target;
       // fai un while verificando l'id del parent node per prendere la lista di film
       while ( !element.classList.contains('films_list_wrapper') ) {
         element = element.parentNode;
       }
-      element.scrollLeft = (element.scrollLeft) + 1000;
+      element.scrollLeft = element.scrollLeft + 1000;
+
+      // show arrow left
+      const arrowLeftElm = element.querySelector(".arrow_left");
+      arrowLeftElm.classList.add("show");
+
+      // if you cannot scroll more to the right => hide arrow_right
+      const screenWidth = document.querySelector("html").clientWidth;
+      if ( (element.scrollLeft + 1000) >= (element.scrollWidth - screenWidth - 10) ) {
+        element.querySelector(".arrow_right").classList.add("hide");
+      }
     },
     scrollLeft(ev) {
-      // console.log(ev.target.id);
       let element = ev.target;
       // fai un while verificando l'id del parent node per prendere la lista di film
       while ( !element.classList.contains('films_list_wrapper') ) {
         element = element.parentNode;
       }
       element.scrollLeft = (element.scrollLeft) - 1000;
-    }
-  },
+
+      // show arrow right
+      element.querySelector(".arrow_right").classList.remove("hide");
+
+      // if you cannot scroll more to the left => hide arrow_left
+      if ( (element.scrollLeft - 1000) <= 0 ) {
+        element.querySelector(".arrow_left").classList.remove("show");
+      }
+    },
+  }
 }
 </script>
 
 <style scoped lang="scss">  
   section {
-    .container {
+    .container_relative {
       position: relative;
       padding: 0;
     }
@@ -145,10 +179,11 @@ export default {
       .arrow_right {
         position: absolute;
         z-index: 9999;
-        top: 0;
-        bottom: 0;
-        width: 70px;
-        background-color: rgba(0, 0, 0, 0.699);
+        height: 35%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        background-color: rgba(0, 0, 0, 0.808);
         cursor: pointer;
 
         display: flex;
@@ -156,14 +191,23 @@ export default {
         align-items: center;
         .icon {
           color: rgba(255, 255, 255, 0.815);
-          font-size: 3rem;
+          font-size: 2rem;
         }
       }
       .arrow_left {
         left: 0;
+        border-radius: 0 1rem 1rem 0;
+        display: none;
+        &.show {
+          display: flex;
+        }
       }
       .arrow_right {
         right: 0;
+        border-radius: 1rem 0 0 1rem;
+        &.hide {
+          display: none;
+        }
       }
       ul {
         display: flex;

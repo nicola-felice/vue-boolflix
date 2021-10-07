@@ -100,11 +100,11 @@ export default {
     margin: .15rem;
     color: white;
     &:first-child {
-      margin-left: 5rem;
+      margin-left: 2.5vw;
     }
     #film_card {
-      height: 300px;
-      width: 200px;
+      height: 22vw;
+      width: 15vw;
       position: relative;
       border-radius: .35rem;
       overflow: hidden;

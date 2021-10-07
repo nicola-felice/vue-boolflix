@@ -24,7 +24,7 @@
           
         <button :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' " 
           @click="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
-          class="searchBarElm" id="search_film_btn">Search</button>
+          class="searchBarElm" id="search_film_btn" ref="search_film_btn">Search</button>
       </div>
 
       <div id="notifications">
@@ -63,6 +63,7 @@ export default {
       this.$nextTick(() => this.$refs.input_search.focus())
       // empty input when becomes inactive
       this.searchFilmInput = "";
+      this.$refs.search_film_btn.blur();
     }
   },
   mounted() {
