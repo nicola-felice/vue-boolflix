@@ -99,7 +99,7 @@ export default {
       }));
 
       // rimuovi dalla lista quelli senza immagine
-      
+      list = list.filter( elm => elm.poster_path != null );
 
       this.filmsList = list;
     },
@@ -110,7 +110,12 @@ export default {
           query: text,
         }
       });
-      this.tvSeriesList = res.data.results;
+
+      let list = res.data.results;
+      // rimuovi dalla lista quelli senza immagine
+      list = list.filter( elm => elm.poster_path != null );
+
+      this.tvSeriesList = list;
     },
     checkArrowVisibility(ev) {
       let element = ev.target;
