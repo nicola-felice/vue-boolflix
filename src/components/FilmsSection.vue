@@ -134,6 +134,7 @@ export default {
   section {
     .container {
       position: relative;
+      padding: 0;
     }
     .films_list_wrapper {
       overflow: auto;

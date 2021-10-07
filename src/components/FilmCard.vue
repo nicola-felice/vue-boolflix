@@ -99,6 +99,9 @@ export default {
   li {
     margin: .15rem;
     color: white;
+    &:first-child {
+      margin-left: 5rem;
+    }
     #film_card {
       height: 300px;
       width: 200px;
@@ -156,6 +159,7 @@ export default {
   }
   .title {
     font-weight: 500;
+    margin-bottom: .5rem;
   }
 
   .star {
