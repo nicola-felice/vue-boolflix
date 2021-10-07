@@ -172,7 +172,8 @@ export default {
     }
     .films_list_wrapper {
       overflow: auto;
-      margin: .75rem 0 4rem 0;
+      // margin: .75rem 0 4rem 0;
+      margin-bottom: 2rem;
       overflow-y: hidden;
       scroll-behavior: smooth;
       .arrow_left,
@@ -211,7 +212,7 @@ export default {
       }
       ul {
         display: flex;
-        align-items: center ;
+        align-items: center;
       }
     }
   }

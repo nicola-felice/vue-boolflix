@@ -1,6 +1,6 @@
 <template>
   <li>
-    <div id="film_card">
+    <div id="film_card" ref="film_card">
       <div id="front_card">
         <img class="poster" :src="imageSource()" alt="">
       </div>
@@ -21,13 +21,10 @@
           <p>{{filmData.overview}}</p>
         </div>
 
-        <div class="vote_stars">
+        <div class="flag_vote_wrapper">
           <font-awesome-icon class="star" :class="(isStarGolden(id))? 'golden' : ''" v-for="id in 5" :key="id" :icon="starIcon" />
-        </div>
-
-        <div class="country_flag">
           <country-flag class="flag" :country='countryFlagCode()' :size='size'/>
-        </div>
+        </div>  
       </div>      
     </div>
 
@@ -50,6 +47,7 @@ export default {
     return{
       sizeFlags: 'medium',
       starIcon: faStar,
+      // overTimeout: null,
     }
   },
   props:['filmData', 'size'],
@@ -90,49 +88,74 @@ export default {
         return true;
       }
       return false;
-    }
+    },
   }
 }
 </script>
 
 <style scoped lang="scss">
   li {
-    margin: .15rem;
+    margin: 2.5rem .25rem;
     color: white;
+    position: relative;
+    height: 22vw;
+    width: 15vw;
+    flex-shrink: 0;
     &:first-child {
       margin-left: 2.5vw;
+      #film_card:hover {
+        left: 0;
+        transform: translate(0,-50%);
+      }
+    }
+    &:last-child {
+      #film_card:hover {
+        right: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+      }
     }
     #film_card {
-      height: 22vw;
-      width: 15vw;
-      position: relative;
-      border-radius: .35rem;
+      border-radius: .5rem;
       overflow: hidden;
+      height: 100%;
       #front_card {
-        position: absolute;
-        z-index: 2;
-        top: 0;
-        bottom: 0;
-      }
-      &:hover {
-        #front_card {
-          z-index: -99;
-        }
+        height: 100%;
       }
       #back_card {
-        background-color: black;
-        height: 100%;
-        width: 100%;
+        background-color: #383838;
         padding: 1rem;
-        display: flex;
+        padding-bottom: 0;
+        display: none;
         flex-direction: column;
-        overflow: auto;
-
-        // position: absolute;
-        // z-index: 1;
-        .vote_stars {
-          padding-top: 2rem;
+        .flag_vote_wrapper {
+          margin-bottom: .75rem;
           margin-top: auto;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+    #film_card:hover {
+      position: absolute;
+      width: 400px;
+      height: 120%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      #front_card {
+        height: 30%;
+        width: 100%;
+      }
+      #back_card {
+        display: flex;
+        height: 70%;
+        p {
+          display: -webkit-box;
+          -webkit-line-clamp: 4;
+          -webkit-box-orient: vertical;  
+          overflow: hidden;
         }
       }
     }
@@ -142,14 +165,11 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: 50% 20%;
   }
   .flag {
     display: inline-block;
     margin-left: 0;
-    position: absolute;
-    bottom: 0;
-    right: 0;
   }
   h4 {
     color: rgb(161, 161, 161);
