@@ -123,7 +123,8 @@ export default {
         height: 100%;
       }
       #back_card {
-        background-color: #383838;
+        // background-color: #383838;
+        background-color: #141414;
         padding: 1rem;
         padding-bottom: 0;
         display: none;
@@ -144,6 +145,8 @@ export default {
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 3;
+      -webkit-box-shadow: 0px 0px 6px 6px rgba(0,0,0,0.4); 
+      box-shadow: 0px 0px 6px 6px rgba(0,0,0,0.4);
       #front_card {
         height: 30%;
         width: 100%;
