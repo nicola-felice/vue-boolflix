@@ -101,18 +101,18 @@ export default {
     height: 22vw;
     width: 15vw;
     flex-shrink: 0;
-    &:first-child {
-      margin-left: 2.5vw;
-      #film_card:hover {
-        left: 0;
-        transform: translate(0,-50%);
-      }
-    }
     &:last-child {
       #film_card:hover {
         right: 0;
         left: 0;
         transform: translate(-50%, -50%);
+      }
+    }
+    &:first-child {
+      margin-left: 2.5vw;
+      #film_card:hover {
+        left: 0;
+        transform: translate(0,-50%);
       }
     }
     #film_card {
