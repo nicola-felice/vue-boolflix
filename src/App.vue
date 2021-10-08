@@ -17,7 +17,6 @@
 
 <script>
 import axios from 'axios';
-
 import Header from './components/Header.vue';
 import FilmsSection from './components/FilmsSection.vue';
 
@@ -25,7 +24,6 @@ export default {
   name: 'App',
   data() {
     return {
-      // searchTextInput: "",
       // film lists
       filmsList: [],
       tvSeriesList: [],
@@ -39,7 +37,6 @@ export default {
   },
   methods: {
     search(input) {
-      // this.searchTextInput = input;
       this.filmsRequest(input);
       this.tvSeriesRequest(input);
     },

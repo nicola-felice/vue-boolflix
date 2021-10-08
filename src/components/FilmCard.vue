@@ -47,7 +47,6 @@ export default {
     return{
       sizeFlags: 'medium',
       starIcon: faStar,
-      // overTimeout: null,
     }
   },
   props:['filmData', 'size'],
@@ -98,8 +97,8 @@ export default {
     margin: 2.5rem .25rem;
     color: white;
     position: relative;
-    height: 22vw;
-    width: 15vw;
+    height: 22.5rem;
+    width: 15rem;
     flex-shrink: 0;
     &:last-child {
       #film_card:hover {
@@ -136,9 +135,10 @@ export default {
         }
       }
     }
+    // on card hover styles
     #film_card:hover {
       position: absolute;
-      width: 400px;
+      width: 25rem;
       height: 120%;
       top: 50%;
       left: 50%;
@@ -183,7 +183,6 @@ export default {
     font-weight: 500;
     margin-bottom: .5rem;
   }
-
   .star {
     color: #8d8c8c;
     &.golden  {

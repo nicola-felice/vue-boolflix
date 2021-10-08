@@ -21,7 +21,7 @@
         <input :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' "
           v-model="searchFilmInput" id="input_search" ref="input_search"
           @keyup.enter="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
-          class="searchBarElm" type="text" placeholder="search a series">
+          class="searchBarElm" type="text" placeholder="search your show">
           
         <button :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' " 
           @click="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
@@ -87,7 +87,7 @@ export default {
 
   .logo {
     img {
-      width: 100px;
+      width: 6.25rem;
       margin-right: 1.5rem;
     }
   }
@@ -133,7 +133,7 @@ export default {
     input.active {
       border: 1px #ffffff solid;
       border-right: 1px #d1d1d1 solid;
-      width: 200px;
+      width: 12.5rem;
     }
     button.active {
       background-color: #d1d1d1;
@@ -167,7 +167,7 @@ export default {
     display: flex;
     align-items: center;
     img {
-      width: 28px;
+      width: 1.75rem;
       margin-left: 1.5rem;
       border-radius: .3rem;
     }

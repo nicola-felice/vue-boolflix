@@ -92,10 +92,10 @@ export default {
       .arrow_right {
         position: absolute;
         z-index: 9999;
-        height: 60px;
+        height: 3.75rem;
         top: 50%;
         transform: translateY(-50%);
-        width: 60px;
+        width: 3.75rem;
         background-color: rgba(0, 0, 0, 0.808);
         cursor: pointer;
         border-radius: 50%;
