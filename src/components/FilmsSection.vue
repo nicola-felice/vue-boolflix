@@ -73,6 +73,14 @@ export default {
       }
       element.scrollLeft = (element.scrollLeft) - 1200;
     },
+  },
+  updated() {
+    // hide if thw width of the section is less than the page
+    const screenWidth = document.querySelector("html").clientWidth;
+    const filmListWrapper = document.querySelector(".films_list_wrapper");
+    if ( screenWidth >= filmListWrapper.scrollWidth ) {
+      document.querySelector(".arrow_right").classList.add('hide');
+    }
   }
 }
 </script>
@@ -129,7 +137,7 @@ export default {
       }
     }
   }
-  
+
   h3 {
     color: white;
     margin-left: 3rem;
