@@ -6,11 +6,11 @@
       <nav>
         <ul class="header_nav">
           <li><a class="active" href="#">Home</a></li>
-          <li><a href="#">Serie TV</a></li>
-          <li><a href="#">Film</a></li>
-          <li><a href="#">La mia lista</a></li>
-          <li><a href="#">Nuovi e popolari</a></li>
-          <li><a href="#">Guarda di nuovo</a></li>
+          <li><a href="#">TV series</a></li>
+          <li><a href="#">Movies</a></li>
+          <li><a href="#">Your list</a></li>
+          <li><a href="#">Discover</a></li>
+          <li><a href="#">Watch again</a></li>
         </ul>
       </nav>      
 
@@ -21,7 +21,7 @@
         <input :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' "
           v-model="searchFilmInput" id="input_search" ref="input_search"
           @keyup.enter="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
-          class="searchBarElm" type="text" placeholder="cerca titolo film">
+          class="searchBarElm" type="text" placeholder="search a series">
           
         <button :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' " 
           @click="$emit('searchText', searchFilmInput), isSearchDisabled = true" 

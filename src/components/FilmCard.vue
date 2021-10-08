@@ -123,7 +123,6 @@ export default {
         height: 100%;
       }
       #back_card {
-        // background-color: #383838;
         background-color: #141414;
         padding: 1rem;
         padding-bottom: 0;

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 v-if="searchText != ''">TV SERIES</h3>
+    <h3>{{sectionTitle}}</h3>
     <div class="container_relative">
       <div class="films_list_wrapper" @scroll="checkArrowVisibility">
         <div @click="scrollLeft" class="arrow_left">
@@ -8,59 +8,7 @@
         </div>
 
         <ul>
-          <FilmCard v-for="(elm, index) in tvSeriesList" :key="index" :film-data="elm" />
-        </ul>
-
-        <div @click="scrollRight" class="arrow_right" :class="(tvSeriesList.length <= 6)? 'hide' : ''">
-          <font-awesome-icon class="icon" :icon="arrowR" />
-        </div>        
-      </div>
-    </div>
-
-    <h3 v-if="searchText != ''">FILMS</h3>
-    <div class="container_relative">
-      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
-        <div @click="scrollLeft" class="arrow_left">
-          <font-awesome-icon class="icon" :icon="arrowL" />
-        </div>
-
-        <ul>
-          <FilmCard v-for="(elm, index) in filmsList" :key="index" :film-data="elm" />
-        </ul>
-
-        <div @click="scrollRight" class="arrow_right" :class="(filmsList.length <= 6)? 'hide' : ''">
-          <font-awesome-icon class="icon" :icon="arrowR" />
-        </div>
-      </div>
-    </div>
-
-    <!-- trending -->
-    <h3>TRENDING TV SERIES</h3>
-    <div class="container_relative">
-      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
-        <div @click="scrollLeft" class="arrow_left">
-          <font-awesome-icon class="icon" :icon="arrowL" />
-        </div>
-
-        <ul>
-          <FilmCard v-for="(elm, index) in trendingTvSeries" :key="index" :film-data="elm" />
-        </ul>
-
-        <div @click="scrollRight" class="arrow_right">
-          <font-awesome-icon class="icon" :icon="arrowR" />
-        </div>        
-      </div>
-    </div>
-
-    <h3>TRENDING FILMS</h3>
-    <div class="container_relative">
-      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
-        <div @click="scrollLeft" class="arrow_left">
-          <font-awesome-icon class="icon" :icon="arrowL" />
-        </div>
-
-        <ul>
-          <FilmCard v-for="(elm, index) in trendingMovies" :key="index" :film-data="elm" />
+          <FilmCard v-for="(elm, index) in filmsListData" :key="index" :film-data="elm" />
         </ul>
 
         <div @click="scrollRight" class="arrow_right">
@@ -72,7 +20,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import FilmCard from './FilmCard.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
@@ -83,76 +30,15 @@ export default {
     FilmCard,
     FontAwesomeIcon
   },
-  props: ['searchText'],
+  props: ['filmsListData', 'sectionTitle'],
   data() {
     return {
-      filmsList: [],
-      tvSeriesList: [],
-      trendingMovies: [],
-      trendingTvSeries: [],
       // icons
       arrowR: faChevronRight,
       arrowL: faChevronLeft,
     }
   },
-  watch: {
-    searchText: function(val) {
-      // after the user makes a search
-      if ( val == "" ) {
-        // if the input is "", empty the list 
-        this.filmsList = [];
-        this.tvSeriesList = [];
-      } else {
-        // else make a request for the data
-        this.filmsRequest(val);
-        this.tvSeriesRequest(val);
-      }
-    }
-  },
   methods: {
-    filmsRequest: async function(text) {
-      // get the films list
-      let res = await axios.get('https://api.themoviedb.org/3/search/movie?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
-        params: {
-          query: text,
-        }
-      });
-      let list = res.data.results;
-
-      // when you have the films list
-      // request for the production country for each film
-      // then add the property to list
-      await Promise.all(list.map(async (elm) => {
-        let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
-
-        const productionCountries = resp.data.production_countries[0];
-
-        if ( productionCountries == undefined ) {
-          elm.production_countries = ""; 
-        } else {
-          elm.production_countries = productionCountries.iso_3166_1;
-        }
-      }));
-
-      // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
-
-      this.filmsList = list;
-    },
-    tvSeriesRequest: async function(text) {
-      // with the same input search also for tv series
-      let res = await axios.get('https://api.themoviedb.org/3/search/tv?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
-        params: {
-          query: text,
-        }
-      });
-
-      let list = res.data.results;
-      // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
-
-      this.tvSeriesList = list;
-    },
     checkArrowVisibility(ev) {
       let element = ev.target;
 
@@ -163,11 +49,11 @@ export default {
 
       // if you cannot scroll more to the right => hide arrow_right
       const screenWidth = document.querySelector("html").clientWidth;
-      if ( (element.scrollLeft + 200) >= (element.scrollWidth - screenWidth - 10) ) {
+      if ( (element.scrollLeft + 30) >= (element.scrollWidth - screenWidth - 10) ) {
         element.querySelector(".arrow_right").classList.add("hide");
       }
       // if you cannot scroll more to the left => hide arrow_left
-      if ( (element.scrollLeft - 200) <= 0 ) {
+      if ( (element.scrollLeft - 30) <= 0 ) {
         element.querySelector(".arrow_left").classList.remove("show");
       }
     },
@@ -177,17 +63,7 @@ export default {
       while ( !element.classList.contains('films_list_wrapper') ) {
         element = element.parentNode;
       }
-      element.scrollLeft = element.scrollLeft + 1000;
-
-      // show arrow left
-      const arrowLeftElm = element.querySelector(".arrow_left");
-      arrowLeftElm.classList.add("show");
-
-      // if you cannot scroll more to the right => hide arrow_right
-      const screenWidth = document.querySelector("html").clientWidth;
-      if ( (element.scrollLeft + 1000) >= (element.scrollWidth - screenWidth - 10) ) {
-        element.querySelector(".arrow_right").classList.add("hide");
-      }
+      element.scrollLeft = element.scrollLeft + 1200;
     },
     scrollLeft(ev) {
       let element = ev.target;
@@ -195,48 +71,8 @@ export default {
       while ( !element.classList.contains('films_list_wrapper') ) {
         element = element.parentNode;
       }
-      element.scrollLeft = (element.scrollLeft) - 1000;
-
-      // show arrow right
-      element.querySelector(".arrow_right").classList.remove("hide");
-
-      // if you cannot scroll more to the left => hide arrow_left
-      if ( (element.scrollLeft - 1000) <= 0 ) {
-        element.querySelector(".arrow_left").classList.remove("show");
-      }
+      element.scrollLeft = (element.scrollLeft) - 1200;
     },
-    suggestedSeriesRequets: async function() {
-      let res = await axios.get('https://api.themoviedb.org/3/trending/tv/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
-      let list = res.data.results;
-      // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
-      this.trendingTvSeries = list;
-    },
-    suggestedMoviesRequest: async function() {
-      let res = await axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
-      let list = res.data.results;
-
-      await Promise.all(list.map(async (elm) => {
-        let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
-
-        const productionCountries = resp.data.production_countries[0];
-
-        if ( productionCountries == undefined ) {
-          elm.production_countries = ""; 
-        } else {
-          elm.production_countries = productionCountries.iso_3166_1;
-        }
-      }));
-
-      // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
-
-      this.trendingMovies = list;
-    }
-  },
-  mounted() {
-    this.suggestedSeriesRequets();
-    this.suggestedMoviesRequest();
   }
 }
 </script>
