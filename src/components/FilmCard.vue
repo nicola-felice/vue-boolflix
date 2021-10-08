@@ -12,8 +12,10 @@
         </div>
 
         <div>
-          <h4>Titolo originale:</h4>
-          <div class="title">{{(filmData.original_title)? filmData.original_title : filmData.original_name}}</div>  
+          <h4>Actors:</h4>
+          <div id="actors" class="title">
+            <span v-for="(elm, index) in filmData.cast" :key="index">{{elm.name}}</span>  
+          </div>  
         </div>
 
         <div class="overview">

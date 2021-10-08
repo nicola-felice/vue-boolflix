@@ -129,7 +129,7 @@ export default {
       }
     }
   }
-
+  
   h3 {
     color: white;
     margin-left: 3rem;

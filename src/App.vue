@@ -64,6 +64,15 @@ export default {
         }
       }));
 
+      // get cast
+      await Promise.all(list.map(async (elm) => {
+        let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}/credits?api_key=ef791ca0153b5b4ddac7daddda0a384a&language=en-US`);
+
+        elm.cast = resp.data.cast;
+        // take only actors
+        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+      }));
+
       // remove those with no image
       list = list.filter( elm => elm.poster_path != null );
 
@@ -76,8 +85,17 @@ export default {
           query: text,
         }
       });
-
       let list = res.data.results;
+
+      // get cast
+      await Promise.all(list.map(async (elm) => {
+        let resp = await axios.get(`https://api.themoviedb.org/3/tv/${elm.id}/credits?api_key=ef791ca0153b5b4ddac7daddda0a384a&language=en-US`);
+
+        elm.cast = resp.data.cast;
+        // take only the actors
+        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+      }));
+
       // remove those with no image
       list = list.filter( elm => elm.poster_path != null );
 
@@ -86,6 +104,16 @@ export default {
     suggestedSeriesRequets: async function() {
       let res = await axios.get('https://api.themoviedb.org/3/trending/tv/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
       let list = res.data.results;
+
+      // get first 5 actors
+      await Promise.all(list.map(async (elm) => {
+        let resp = await axios.get(`https://api.themoviedb.org/3/tv/${elm.id}/credits?api_key=ef791ca0153b5b4ddac7daddda0a384a&language=en-US`);
+
+        elm.cast = resp.data.cast;
+        // take only the actors
+        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+      }));
+
       // remove those with no image
       list = list.filter( elm => elm.poster_path != null );
       this.trendingTvSeries = list;
@@ -94,6 +122,7 @@ export default {
       let res = await axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
       let list = res.data.results;
 
+      // get movie country of production
       await Promise.all(list.map(async (elm) => {
         let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
 
@@ -106,13 +135,22 @@ export default {
         }
       }));
 
+      // get cast
+      await Promise.all(list.map(async (elm) => {
+        let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}/credits?api_key=ef791ca0153b5b4ddac7daddda0a384a&language=en-US`);
+
+        elm.cast = resp.data.cast;
+        // take only actors
+        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+      }));
+
       // remove those with no image
       list = list.filter( elm => elm.poster_path != null );
 
       this.trendingMovies = list;
     }
   },
-  mounted() {
+  created() {
     this.suggestedSeriesRequets();
     this.suggestedMoviesRequest();
   }
