@@ -7,14 +7,14 @@
 
       <div id="back_card">
         <div>
-          <h4>Titolo:</h4>
+          <h4>Title:</h4>
           <div class="title">{{(filmData.title)? filmData.title : filmData.name}}</div>          
         </div>
 
         <div>
-          <h4>Actors:</h4>
+          <h4 v-if="filmData.cast.length > 0">Actors:</h4>
           <div id="actors" class="title">
-            <span v-for="(elm, index) in filmData.cast" :key="index">{{elm.name}}</span>  
+            <span v-for="(elm, index) in filmData.cast" :key="index">{{elm.name}}<span v-if="index != filmData.cast.length - 1"> - </span></span> 
           </div>  
         </div>
 

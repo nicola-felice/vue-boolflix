@@ -70,7 +70,7 @@ export default {
 
         elm.cast = resp.data.cast;
         // take only actors
-        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+        elm.cast = elm.cast.filter( (elm, index) => elm.known_for_department == 'Acting' && index < 5 );
       }));
 
       // remove those with no image
@@ -93,7 +93,7 @@ export default {
 
         elm.cast = resp.data.cast;
         // take only the actors
-        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+        elm.cast = elm.cast.filter( (elm, index) => elm.known_for_department == 'Acting' && index < 5 );
       }));
 
       // remove those with no image
@@ -111,7 +111,7 @@ export default {
 
         elm.cast = resp.data.cast;
         // take only the actors
-        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+        elm.cast = elm.cast.filter( (elm, index) => elm.known_for_department == 'Acting' && index < 5 );
       }));
 
       // remove those with no image
@@ -141,7 +141,7 @@ export default {
 
         elm.cast = resp.data.cast;
         // take only actors
-        elm.cast = elm.cast.filter( elm => elm.known_for_department == 'Acting' );
+        elm.cast = elm.cast.filter( (elm, index) => elm.known_for_department == 'Acting' && index < 5 );
       }));
 
       // remove those with no image
