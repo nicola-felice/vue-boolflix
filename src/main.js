@@ -1,7 +1,10 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
 
-Vue.config.productionTip = false
+import VueYoutube from 'vue-youtube';
+Vue.use(VueYoutube);
+
+Vue.config.productionTip = false;
 
 new Vue({
   render: h => h(App),

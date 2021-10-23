@@ -120,6 +120,7 @@ export default {
       border-radius: .5rem;
       overflow: hidden;
       height: 100%;
+      user-select: none;
       #front_card {
         height: 100%;
       }

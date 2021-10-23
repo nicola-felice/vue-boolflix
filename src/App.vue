@@ -3,6 +3,8 @@
     <Header @searchText="search" />
 
     <main>
+      <Hero />
+
       <FilmsSection v-if="tvSeriesList.length > 0" :section-title="'YOUR TV SERIES'" :films-list-data="tvSeriesList" />
 
       <FilmsSection v-if="filmsList.length > 0" :section-title="'TOUR FILMS'" :films-list-data="filmsList" />
@@ -19,6 +21,7 @@
 import axios from 'axios';
 import Header from './components/Header.vue';
 import FilmsSection from './components/FilmsSection.vue';
+import Hero from './components/Hero.vue';
 
 export default {
   name: 'App',
@@ -33,14 +36,16 @@ export default {
   },
   components: {
     Header,
-    FilmsSection
+    FilmsSection,
+    Hero,
   },
   methods: {
-    search(input) {
-      this.filmsRequest(input);
-      this.tvSeriesRequest(input);
+    async search(input) {
+      await this.filmsRequest(input);
+      await this.tvSeriesRequest(input);
+      window.scrollTo(0, 600);
     },
-    filmsRequest: async function(text) {
+    async filmsRequest(text) {
       // get the films list
       let res = await axios.get('https://api.themoviedb.org/3/search/movie?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
         params: {
@@ -78,7 +83,7 @@ export default {
 
       this.filmsList = list;
     },
-    tvSeriesRequest: async function(text) {
+    async tvSeriesRequest(text) {
       // with the same input search also for tv series
       let res = await axios.get('https://api.themoviedb.org/3/search/tv?api_key=ef791ca0153b5b4ddac7daddda0a384a', {
         params: {
@@ -101,7 +106,7 @@ export default {
 
       this.tvSeriesList = list;
     },
-    suggestedSeriesRequets: async function() {
+    async suggestedSeriesRequets() {
       let res = await axios.get('https://api.themoviedb.org/3/trending/tv/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
       let list = res.data.results;
 
@@ -118,7 +123,7 @@ export default {
       list = list.filter( elm => elm.poster_path != null );
       this.trendingTvSeries = list;
     },
-    suggestedMoviesRequest: async function() {
+    async suggestedMoviesRequest() {
       let res = await axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=ef791ca0153b5b4ddac7daddda0a384a');
       let list = res.data.results;
 
@@ -153,7 +158,7 @@ export default {
   created() {
     this.suggestedSeriesRequets();
     this.suggestedMoviesRequest();
-  }
+  },
 }
 </script>
 
@@ -161,7 +166,4 @@ export default {
   @import './assets/style/common.scss';
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
 
-  Header {
-    margin-bottom: 5rem;
-  }
 </style>

@@ -22,10 +22,6 @@
           v-model="searchFilmInput" id="input_search" ref="input_search"
           @keyup.enter="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
           class="searchBarElm" type="text" placeholder="search your show">
-          
-        <button :disabled="isSearchDisabled" :class="(isSearchDisabled)? '' : 'active' " 
-          @click="$emit('searchText', searchFilmInput), isSearchDisabled = true" 
-          class="searchBarElm" id="search_film_btn" ref="search_film_btn">Search</button>
       </div>
 
       <div id="notifications">
@@ -49,6 +45,7 @@ export default {
   components: {
     FontAwesomeIcon,
   },
+
   data() {
     return {
       searchFilmInput: "",
@@ -58,15 +55,16 @@ export default {
       isSearchDisabled: true,
     }
   },
+
   watch: {
     isSearchDisabled() {
       // when input becomes active focus on it
       this.$nextTick(() => this.$refs.input_search.focus())
       // empty input when becomes inactive
       this.searchFilmInput = "";
-      this.$refs.search_film_btn.blur();
     }
   },
+
   mounted() {
     // on change focus hide search bar
     document.addEventListener('click', (ev) => {
@@ -80,6 +78,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999999;
+    padding-bottom: 1rem;
+    background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,1) 3%, rgba(0,150,136,0) 93%); 
+  }
+
   .container {
     display: flex;
     align-items: center;
@@ -113,7 +122,7 @@ export default {
     margin-left: auto;
     input {
       background-color: transparent;
-      color: #d1d1d1;
+      color: #ffffff;
       width: 0;
       border: none;
       padding: .5rem;  
@@ -121,28 +130,12 @@ export default {
       transition: all 300ms linear;
       outline: none;
     }
-    button {
-      border-radius: 0;
-      width: 0;
-      color: transparent;
-      display: inline-block;
-      border: none;
-      transition: all 100ms linear, margin-right 0ms linear;
-      overflow: hidden;
-    }
     input.active {
       border: 1px #ffffff solid;
       border-right: 1px #d1d1d1 solid;
-      width: 12.5rem;
-    }
-    button.active {
-      background-color: #d1d1d1;
-      border: 1px #d1d1d1 solid;
-      width: unset;
-      color: black;
-      cursor: pointer;
-      padding: .5rem;
+      width: 15rem;
       margin-right: 1.5rem;
+      background-color: rgba(0, 0, 0, 0.3);
     }
 
     #search_icon {

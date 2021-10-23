@@ -2,8 +2,8 @@
   <section>
     <h3>{{sectionTitle}}</h3>
     <div class="container_relative">
-      <div class="films_list_wrapper" @scroll="checkArrowVisibility">
-        <div @click="scrollLeft" class="arrow_left">
+      <div ref="films_list_wrapper" class="films_list_wrapper" @scroll="checkArrowVisibility">
+        <div @click="scrollLeft" ref="arrow_left" class="arrow_left">
           <font-awesome-icon class="icon" :icon="arrowL" />
         </div>
 
@@ -11,7 +11,7 @@
           <FilmCard v-for="(elm, index) in filmsListData" :key="index" :film-data="elm" />
         </ul>
 
-        <div @click="scrollRight" class="arrow_right">
+        <div @click="scrollRight" ref="arrow_right" class="arrow_right">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>
       </div>
@@ -26,11 +26,14 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 
 export default {
   name: 'FilmsSection',
+
   components: {
     FilmCard,
     FontAwesomeIcon
   },
+
   props: ['filmsListData', 'sectionTitle'],
+
   data() {
     return {
       // icons
@@ -38,23 +41,25 @@ export default {
       arrowL: faChevronLeft,
     }
   },
+
   methods: {
-    checkArrowVisibility(ev) {
-      let element = ev.target;
+    checkArrowVisibility() {
+      const filmListWrapper = this.$refs.films_list_wrapper;
 
       // show arrow left
-      element.querySelector(".arrow_left").classList.add("show");
+      this.$refs.arrow_left.classList.add("show");
       // show arrow right
-      element.querySelector(".arrow_right").classList.remove("hide");
+      this.$refs.arrow_right.classList.remove("hide");
 
       // if you cannot scroll more to the right => hide arrow_right
       const screenWidth = document.querySelector("html").clientWidth;
-      if ( (element.scrollLeft + 30) >= (element.scrollWidth - screenWidth - 10) ) {
-        element.querySelector(".arrow_right").classList.add("hide");
+      if ( (filmListWrapper.scrollLeft + 30) >= (filmListWrapper.scrollWidth - screenWidth - 10) ) {
+        this.$refs.arrow_right.classList.add("hide");
       }
+
       // if you cannot scroll more to the left => hide arrow_left
-      if ( (element.scrollLeft - 30) <= 0 ) {
-        element.querySelector(".arrow_left").classList.remove("show");
+      if ( (filmListWrapper.scrollLeft - 30) <= 0 ) {
+        this.$refs.arrow_left.classList.remove("show");
       }
     },
     scrollRight(ev) {
@@ -74,32 +79,36 @@ export default {
       element.scrollLeft = (element.scrollLeft) - 1200;
     },
   },
+
   updated() {
-    // hide if thw width of the section is less than the page
-    const screenWidth = document.querySelector("html").clientWidth;
-    const filmListWrapper = document.querySelector(".films_list_wrapper");
-    if ( screenWidth >= filmListWrapper.scrollWidth ) {
-      document.querySelector(".arrow_right").classList.add('hide');
-    }
+    this.checkArrowVisibility();
+  },
+
+  mounted() {
+    this.checkArrowVisibility();
   }
 }
 </script>
 
 <style scoped lang="scss">  
   section {
+    background: #141414;
+    background: linear-gradient(0deg, #141414 60%, rgba(0,0,0,0) 100%); 
+    position: relative;
+    z-index: 4;
+    padding-top: 5rem;
     .container_relative {
       position: relative;
       padding: 0;
     }
     .films_list_wrapper {
       overflow: auto;
-      margin-bottom: 2rem;
       overflow-y: hidden;
       scroll-behavior: smooth;
       .arrow_left,
       .arrow_right {
         position: absolute;
-        z-index: 9999;
+        z-index: 99;
         height: 3.75rem;
         top: 50%;
         transform: translateY(-50%);
