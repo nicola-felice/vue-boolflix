@@ -223,7 +223,7 @@ export default {
       display: inline-flex;
       align-items: center;
       &:hover {
-        background-color: rgba(255, 255, 255, 0.6);
+        background-color: rgba(255, 255, 255, 0.76);
       }
       &.other_info {
         background-color: rgba(109,109,110,0.7);
