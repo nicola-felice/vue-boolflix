@@ -19,11 +19,11 @@
       </div>
     </div>
 
-    <!-- <youtube :video-id="videoId" ref="yt" id="yt"
+    <youtube :video-id="videoId" ref="yt" id="yt"
       :player-vars="playerVars"
       tabindex="-1" style='pointer-events: none;position: absolute;z-index: -2;bottom: 0;top: -55%;min-width: 100vw;height: 200%;'
       @error="onVideoError" @ready="onPlayerReady">
-    </youtube> -->
+    </youtube>
 
     <button @click="toggleAudio" id="btn_audio_controls">
       <font-awesome-icon v-if="isVideoMuted" class="icon" :icon="volumeOff" />
