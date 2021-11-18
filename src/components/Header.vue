@@ -68,7 +68,9 @@ export default {
   mounted() {
     // on change focus hide search bar
     document.addEventListener('click', (ev) => {
-      if ( ev.target.classList.contains('searchBarElm') || ev.target.closest(".searchBarElm") ) {
+      const clickedOnSearchBar = ev.target.classList.contains('searchBarElm') || ev.target.closest(".searchBarElm");
+      
+      if ( clickedOnSearchBar ) {
         return null;
       }
       this.isSearchDisabled = true

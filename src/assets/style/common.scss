@@ -16,10 +16,13 @@ body {
   font-family: 'Montserrat', sans-serif;
   background-color: #141414;
   overflow-x: hidden;
+  cursor: default;
+  padding-bottom: 5rem;
 }
 
 img {
   display: block;
+  max-width: 100%;
 }
 
 /* Works on Firefox */

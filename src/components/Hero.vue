@@ -19,11 +19,11 @@
       </div>
     </div>
 
-    <youtube :video-id="videoId" ref="yt" id="yt"
+    <!-- <youtube :video-id="videoId" ref="yt" id="yt"
       :player-vars="playerVars"
-      tabindex="-1" style='pointer-events: none;position: absolute;bottom: 0;top: -55%;min-width: 100vw;height: 200%;'
+      tabindex="-1" style='pointer-events: none;position: absolute;z-index: -2;bottom: 0;top: -55%;min-width: 100vw;height: 200%;'
       @error="onVideoError" @ready="onPlayerReady">
-    </youtube>
+    </youtube> -->
 
     <button @click="toggleAudio" id="btn_audio_controls">
       <font-awesome-icon v-if="isVideoMuted" class="icon" :icon="volumeOff" />
@@ -120,7 +120,7 @@ export default {
       let list = res.data.results;
 
       // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
+      list = list.filter( elm => elm.backdrop_path != null );
 
       this.trendingTvSeries = list;
     },
@@ -138,11 +138,13 @@ export default {
         }
       });
 
+      // ??
       if ( this.targetFilm == null ) {
         this.videoRequest();
       } else {
         this.targetFilm = targetFilm;
       }
+      // ??
     },
   },
 
@@ -164,7 +166,7 @@ export default {
   }
   .details_wrapper {
     position: absolute;
-    z-index: 4;
+    z-index: 2;
     bottom: 36%;
     margin-left: 3vw;
     width: 35%;
@@ -246,13 +248,13 @@ export default {
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: -1;
+    z-index: -5;
 
     background-position: center;
     background-size: cover;
     &.show {
       opacity: 1;
-      z-index: 3;
+      z-index: -1;
     }
   }
   #btn_audio_controls {

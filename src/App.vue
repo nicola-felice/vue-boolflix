@@ -5,14 +5,16 @@
     <main>
       <Hero />
 
-      <FilmsSection v-if="tvSeriesList.length > 0" :section-title="'YOUR TV SERIES'" :films-list-data="tvSeriesList" />
+      <FilmsSection class="FilmsSection" v-if="tvSeriesList.length > 0" :section-title="'YOUR TV SERIES'" :films-list-data="tvSeriesList" />
 
-      <FilmsSection v-if="filmsList.length > 0" :section-title="'TOUR FILMS'" :films-list-data="filmsList" />
+      <FilmsSection class="FilmsSection" v-if="filmsList.length > 0" :section-title="'TOUR FILMS'" :films-list-data="filmsList" />
 
       <!-- trending films/series -->
-      <FilmsSection :section-title="'TRENDING TV SERIES'" :films-list-data="trendingTvSeries" />
+      <FilmsSection class="FilmsSection" :section-title="'TRENDING TV SERIES'" :films-list-data="trendingTvSeries" />
 
-      <FilmsSection :section-title="'TRENDING FILMS'" :films-list-data="trendingMovies" />
+      <FilmsSection class="FilmsSection" :section-title="'TRENDING FILMS'" :films-list-data="trendingMovies" />
+
+
     </main>
   </div>
 </template>
@@ -54,9 +56,11 @@ export default {
       });
       let list = res.data.results;
 
-      // when you have the films list
-      // request for the production country for each film
-      // then add the property to list
+      list.forEach( elm => {
+        elm.media_type = 'movie';
+      });
+
+      // get production country
       await Promise.all(list.map(async (elm) => {
         let resp = await axios.get(`https://api.themoviedb.org/3/movie/${elm.id}?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
 
@@ -79,7 +83,7 @@ export default {
       }));
 
       // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
+      list = list.filter( elm => elm.backdrop_path != null );
 
       this.filmsList = list;
     },
@@ -92,6 +96,10 @@ export default {
       });
       let list = res.data.results;
 
+      list.forEach( elm => {
+        elm.media_type = 'tv';
+      });
+
       // get cast
       await Promise.all(list.map(async (elm) => {
         let resp = await axios.get(`https://api.themoviedb.org/3/tv/${elm.id}/credits?api_key=ef791ca0153b5b4ddac7daddda0a384a&language=en-US`);
@@ -102,7 +110,7 @@ export default {
       }));
 
       // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
+      list = list.filter( elm => elm.backdrop_path != null );
 
       this.tvSeriesList = list;
     },
@@ -120,7 +128,7 @@ export default {
       }));
 
       // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
+      list = list.filter( elm => elm.backdrop_path != null );
       this.trendingTvSeries = list;
     },
     async suggestedMoviesRequest() {
@@ -150,7 +158,7 @@ export default {
       }));
 
       // remove those with no image
-      list = list.filter( elm => elm.poster_path != null );
+      list = list.filter( elm => elm.backdrop_path != null );
 
       this.trendingMovies = list;
     }
@@ -166,4 +174,10 @@ export default {
   @import './assets/style/common.scss';
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
 
+  .FilmsSection:first-of-type {
+    margin-top: 6rem;
+    .container_relative {
+    background: linear-gradient(0deg, #141414 40%, rgba(0,0,0,0) 100%);       
+    }
+  }
 </style>

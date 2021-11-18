@@ -1,26 +1,29 @@
 <template>
   <section>
     <h3>{{sectionTitle}}</h3>
-    <div class="container_relative">
-      <div ref="films_list_wrapper" class="films_list_wrapper" @scroll="checkArrowVisibility">
+    <div class="container_relative" @mouseover="onHover" @mouseleave="hideArrows">
+      <div ref="films_list_wrapper" class="films_list_wrapper" @scroll="isScrollEnded">
         <div @click="scrollLeft" ref="arrow_left" class="arrow_left">
           <font-awesome-icon class="icon" :icon="arrowL" />
         </div>
 
         <ul>
-          <FilmCard v-for="(elm, index) in filmsListData" :key="index" :film-data="elm" />
+          <film-card @previewData="showPreview" v-for="(elm, index) in filmsListData" :key="index" :film-data="elm" />
         </ul>
 
-        <div @click="scrollRight" ref="arrow_right" class="arrow_right">
+        <div @click="scrollRight" ref="arrow_right" class="arrow_right hide">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>
       </div>
     </div>
+    <!-- hover card component -->
+    <preview-card :position="cardHoverPosition" :film-data="cardHoverData" />
   </section>
 </template>
 
 <script>
 import FilmCard from './FilmCard.vue';
+import PreviewCard from './PreviewCard.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
@@ -29,7 +32,8 @@ export default {
 
   components: {
     FilmCard,
-    FontAwesomeIcon
+    FontAwesomeIcon,
+    PreviewCard
   },
 
   props: ['filmsListData', 'sectionTitle'],
@@ -39,90 +43,113 @@ export default {
       // icons
       arrowR: faChevronRight,
       arrowL: faChevronLeft,
+
+      timerScroll: null,
+
+      // data film hovered
+      cardHoverData: null,
+      cardHoverPosition: null,
     }
   },
 
   methods: {
+    showPreview(coordinates, filmData){
+      this.cardHoverData = filmData;
+      this.cardHoverPosition = coordinates;
+    },
     checkArrowVisibility() {
       const filmListWrapper = this.$refs.films_list_wrapper;
+      const leftArrowDomElm = this.$refs.arrow_left;
+      const rightArrowDomElm = this.$refs.arrow_right;
 
-      // show arrow left
-      this.$refs.arrow_left.classList.add("show");
-      // show arrow right
-      this.$refs.arrow_right.classList.remove("hide");
+      leftArrowDomElm.classList.add("show");
+      rightArrowDomElm.classList.remove("hide");
 
-      // if you cannot scroll more to the right => hide arrow_right
       const screenWidth = document.querySelector("html").clientWidth;
-      if ( (filmListWrapper.scrollLeft + 30) >= (filmListWrapper.scrollWidth - screenWidth - 10) ) {
-        this.$refs.arrow_right.classList.add("hide");
+      const canScrollToRight = (filmListWrapper.scrollLeft + 30) < (filmListWrapper.scrollWidth - screenWidth - 10);
+      if ( !canScrollToRight ) {
+        rightArrowDomElm.classList.add("hide");
       }
 
-      // if you cannot scroll more to the left => hide arrow_left
-      if ( (filmListWrapper.scrollLeft - 30) <= 0 ) {
-        this.$refs.arrow_left.classList.remove("show");
+      const canScrollToLeft = (filmListWrapper.scrollLeft - 30) <= 0;
+      if ( canScrollToLeft ) {
+        leftArrowDomElm.classList.remove("show");
       }
     },
-    scrollRight(ev) {
-      let element = ev.target;
-      // fai un while verificando l'id del parent node per prendere la lista di film
-      while ( !element.classList.contains('films_list_wrapper') ) {
-        element = element.parentNode;
+    isScrollEnded() {
+      const isTimeoutSet = this.timerScroll !== null;
+      if(isTimeoutSet) {
+        clearTimeout(this.timerScroll);        
       }
-      element.scrollLeft = element.scrollLeft + 1200;
+      this.timerScroll = setTimeout( () => {
+        this.hideArrows();
+      }, 150);
     },
-    scrollLeft(ev) {
-      let element = ev.target;
-      // fai un while verificando l'id del parent node per prendere la lista di film
-      while ( !element.classList.contains('films_list_wrapper') ) {
-        element = element.parentNode;
-      }
-      element.scrollLeft = (element.scrollLeft) - 1200;
+    onHover() {
+      this.checkArrowVisibility();
+    },
+    hideArrows() {
+      this.$refs.arrow_left.classList.remove("show");
+      this.$refs.arrow_right.classList.add("hide");
+    },
+    scrollRight() {
+      const filmListWrapper = this.$refs.films_list_wrapper;
+      filmListWrapper.scrollLeft += 1200;
+    },
+    scrollLeft() {
+      const filmListWrapper = this.$refs.films_list_wrapper;
+      filmListWrapper.scrollLeft -= 1200;
     },
   },
-
-  updated() {
-    this.checkArrowVisibility();
-  },
-
-  mounted() {
-    this.checkArrowVisibility();
-  }
 }
 </script>
 
 <style scoped lang="scss">  
   section {
-    background: #141414;
-    background: linear-gradient(0deg, #141414 60%, rgba(0,0,0,0) 100%); 
-    position: relative;
-    z-index: 4;
-    padding-top: 5rem;
+    padding-top: 1.25rem;
+
     .container_relative {
       position: relative;
+      background: #141414;
+      z-index: 4;
       padding: 0;
+
+      .hover_card {
+        &:hover {
+          background-color: red;
+        }
+      }
     }
     .films_list_wrapper {
-      overflow: auto;
+      overflow-x: auto;
       overflow-y: hidden;
       scroll-behavior: smooth;
+
+      padding: 1rem 0;
       .arrow_left,
       .arrow_right {
         position: absolute;
         z-index: 99;
-        height: 3.75rem;
-        top: 50%;
-        transform: translateY(-50%);
+        top: 2rem;
+        bottom: 2rem;
         width: 3.75rem;
-        background-color: rgba(0, 0, 0, 0.808);
+        background-color: rgba(0, 0, 0, 0.418);
         cursor: pointer;
-        border-radius: 50%;
 
         display: flex;
         justify-content: center;
         align-items: center;
+
+        transition: all 300ms ease-in-out;
         .icon {
-          color: rgba(255, 255, 255, 0.815);
-          font-size: 2.5rem;
+          color: rgb(255, 255, 255);
+          font-size: 1.5rem;
+        }
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.6);
+          .icon {
+            transform: scale(1.2);
+          }
         }
       }
       .arrow_left {
