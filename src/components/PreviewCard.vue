@@ -173,6 +173,7 @@ export default {
   overflow: hidden;
   color: #fff;
   cursor: pointer;
+  user-select: none;
 
   display: flex;
   flex-direction: column;

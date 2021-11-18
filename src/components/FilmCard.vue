@@ -49,6 +49,10 @@ export default {
 
 <style scoped lang="scss">
 
+#film_card {
+  user-select: none;
+}
+
 #film_card:first-child {
   margin: 1rem 0;
   margin-left: 3rem;
