@@ -198,18 +198,22 @@ export default {
         background-image: url('../assets/netflix.png');
       }
     }
-    p {
+    #overview {
       font-size: 1.35vw;
-      margin-bottom: .75rem;
       font-weight: 500;
       line-height: 1.75rem;
       text-shadow: 3px 3px 11px rgba(0, 0, 0, .6);
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;  
       overflow: hidden;
-      display: none;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 600ms cubic-bezier(0.075, 0.82, 0.165, 1), opacity 300ms linear;
       &.show {
+        max-height: 100vh;
+        opacity: 1;
         display: -webkit-box;
+        margin-bottom: .75rem;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;  
       }
     }
     button {
@@ -248,13 +252,13 @@ export default {
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: -5;
-
+    z-index: -1;
     background-position: center;
     background-size: cover;
+
+    transition: opacity 500ms linear;
     &.show {
       opacity: 1;
-      z-index: -1;
     }
   }
   #btn_audio_controls {
