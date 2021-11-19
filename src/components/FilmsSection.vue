@@ -94,11 +94,11 @@ export default {
     },
     scrollRight() {
       const filmListWrapper = this.$refs.films_list_wrapper;
-      filmListWrapper.scrollLeft += 1200;
+      filmListWrapper.scrollLeft += window.innerWidth / 1.5;
     },
     scrollLeft() {
       const filmListWrapper = this.$refs.films_list_wrapper;
-      filmListWrapper.scrollLeft -= 1200;
+      filmListWrapper.scrollLeft -= window.innerWidth / 1.5;
     },
   },
 }
