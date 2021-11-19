@@ -40,7 +40,7 @@ export default {
       if ( this.filmData.backdrop_path == null ) {
         return "#";
       } else {
-        return `https://image.tmdb.org/t/p/w500/${this.filmData.backdrop_path}`;
+        return `https://image.tmdb.org/t/p/w300/${this.filmData.backdrop_path}`;
       }
     }
   }
