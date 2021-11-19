@@ -1,8 +1,13 @@
 <template>
   <div id="preview" ref="preview" @mouseleave="onMouseLeave" 
-      @mouseenter="expandPreview, setImageSrc(filmData.backdrop_path)">
+      @mouseenter="setImageSrc(filmData.backdrop_path), videoRequest(filmData.id, filmData.media_type)">
     <div class="img_wrapper">
       <img ref="poster" src="#" alt="" @load="expandPreview">
+      <div class="video_container" ref="video_container">
+        <youtube :video-id="videoId" ref="yt" id="yt"
+          :player-vars="playerVars" tabindex="-1" @error="onVideoError" style="height: 100%;">
+        </youtube>        
+      </div>
     </div>
     <div class="info_wrapper">
       <div class="btn_wrapper">
@@ -65,17 +70,53 @@ export default {
       duration: null,
       adultContent: false,
       genresList: [],
+
+      // video player
+      videoId: null,
+      playerVars: {
+        autoplay: 0,
+        mute: 1,
+        controls: 0,
+      },
+
+      // timeouts
+      timeouts: [],
     }
   },
 
   methods: {
+    displayVideo() {
+      this.$refs.yt.player.playVideo();
+
+      this.$refs.video_container.style.opacity = '1';
+
+      this.timeouts.push(setTimeout( () => {
+        this.$refs.poster.style.opacity = '0';
+      }, 2000));
+    },
+    onVideoError() {
+      this.timeouts.forEach( elm => {
+        clearTimeout(elm);
+      });
+      console.error('video not found or unable to play');
+    },
     onMouseLeave() {
       this.$refs.preview.classList.remove('expanded');
       this.$refs.preview.style.left = `-100vw`;
+
       this.$refs.poster.src = '#';
+
+      this.$refs.yt.player.stopVideo();
+
+      // reset styles and timeouts
+      this.$refs.video_container.style.opacity = '0';
+      this.$refs.poster.style.opacity = '1';
+      this.timeouts.forEach( elm => {
+        clearTimeout(elm);
+      });
     },
     expandPreview() {
-      this.$refs.preview.classList.add('expanded');      
+      this.$refs.preview.classList.add('expanded');     
     }, 
     setImageSrc(imgFileName) {
       const imgUrl = `https://image.tmdb.org/t/p/original${imgFileName}`;
@@ -88,6 +129,26 @@ export default {
     async getGenresList(type) {
       const res = await axios.get(`https://api.themoviedb.org/3/genre/${type}/list?api_key=ef791ca0153b5b4ddac7daddda0a384a&language=en-US`);
       return res.data.genres;
+    },
+    async videoRequest(id, type) {
+      this.videoId = null;
+      let res = await axios.get(`https://api.themoviedb.org/3/${type}/${id}/videos?api_key=ef791ca0153b5b4ddac7daddda0a384a`);
+
+      res.data.results.forEach( elm => {
+        // find a trailer 
+        if ( elm.type.includes("Trailer") && this.videoId == null ) {
+          this.videoId = elm.key;
+          return;
+        }
+      });
+
+      if ( this.videoId == null ) {
+        return;
+      }
+
+      this.timeouts.push(setTimeout(() => {
+        this.displayVideo();
+      }, 3000));
     }
   },
 
@@ -156,7 +217,7 @@ export default {
       previewDomElm.style.width = `${hoveredCard.width}px`;
       previewDomElm.style.height = `${hoveredCard.height}px`;
     }
-  }
+  },
 }
 </script>
 
@@ -178,87 +239,97 @@ export default {
   display: flex;
   flex-direction: column;
 
-  img {
+  .img_wrapper {
     opacity: 0;
+
+    .video_container {
+      pointer-events: none;
+      position: absolute;
+      height: 115%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      opacity: 0;
+    }
   }
 
   .info_wrapper {
-    height: 50%;
+    height: 45%;
     padding: 1.5rem 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     transition: opacity 250ms linear;
     opacity: 0;
-  }
 
-  .btn_wrapper {
-    display: flex;
-  }
-  .controls {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: transparent;
-    margin-right: .5rem;
-    margin-bottom: .75rem;
-    font-size: 1.05rem;
-    cursor: pointer;
-    transition: opacity 200ms linear;
-    opacity: 0;
-  }
-  .controls:not(:first-child) {
-    background-color: #181818;
-    border: rgba(255,255,255,.5) 2px solid;
-    color: #fff;
-  }
-  .controls:last-child {
-    margin-left: auto;
-  }
-
-  .text_wrapper {
-    font-weight: 500;
-
-    > * {
-      margin-right: .55rem;
+    .btn_wrapper {
+      display: flex;
     }
-    .compatibility {
-      color: #46d369;
-      font-weight: 600;
-    }
-    .age_restriction {
-      border: #747474 1px solid;
-      padding: .09rem .4rem;
-    }
-    .video_quality {
-      border: #747474 1px solid;
-      border-radius: .2rem;
-      padding: .09rem .4rem;
-      font-size: .7rem;
-      color: #e8e8e8;
-    }
-  }
-
-  .genres_wrapper {
-    font-weight: 500;
-
-    .genre {
-      padding-right: .75rem;
-      margin-right: .75rem;
-      display: inline-block;
-      position: relative;
-    }
-    .genre:not(:last-child):after {
-      content: '';
-      display: inline-block;
-      position: absolute;
-      top: 50%;
-      right: 0%;
-      transform: translate(50%, -50%);
-      width: 6px;
-      height: 6px;
+    .controls {
+      width: 2.5rem;
+      height: 2.5rem;
       border-radius: 50%;
-      background-color: #646464;
+      border: transparent;
+      margin-right: .5rem;
+      margin-bottom: .75rem;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: opacity 200ms linear;
+      opacity: 0;
+    }
+    .controls:not(:first-child) {
+      background-color: #181818;
+      border: rgba(255,255,255,.5) 2px solid;
+      color: #fff;
+    }
+    .controls:last-child {
+      margin-left: auto;
+    }
+
+    .text_wrapper {
+      font-weight: 500;
+
+      > * {
+        margin-right: .55rem;
+      }
+      .compatibility {
+        color: #46d369;
+        font-weight: 600;
+      }
+      .age_restriction {
+        border: #747474 1px solid;
+        padding: .09rem .4rem;
+      }
+      .video_quality {
+        border: #747474 1px solid;
+        border-radius: .2rem;
+        padding: .09rem .4rem;
+        font-size: .7rem;
+        color: #e8e8e8;
+      }
+    }
+    .genres_wrapper {
+      font-weight: 500;
+
+      .genre {
+        padding-right: .75rem;
+        margin-right: .75rem;
+        display: inline-block;
+        position: relative;
+      }
+      .genre:not(:last-child):after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        right: 0%;
+        transform: translate(50%, -50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #646464;
+      }
     }
   }
 
@@ -270,14 +341,21 @@ export default {
     box-shadow: rgb(0 0 0 / 75%) 0px 3px 10px;
 
     .info_wrapper {
-      opacity: 1;
-    }
-    .controls {
-      opacity: 1;
+      opacity: 1;    
+      .controls {
+        opacity: 1;
 
-      &:hover {
-        border: #fff 2px solid;
+        &:hover {
+          border: #fff 2px solid;
+        }
       }
+    }
+
+    .img_wrapper {
+      position: relative;
+      overflow: hidden;
+      height: 55%;
+      opacity: 1;
     }
 
     img,
@@ -286,7 +364,9 @@ export default {
     }
     img {
       object-fit: cover;
-      opacity: 1;
+      height: 100%;
+      position: absolute;
+      z-index: 2;
     }
   }
 }
