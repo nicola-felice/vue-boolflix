@@ -168,7 +168,6 @@ export default {
         this.$refs.yt.player.mute();
         this.isVideoMuted = true;
       }
-      console.log('hey bro')
     },
   },
 

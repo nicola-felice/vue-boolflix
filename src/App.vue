@@ -11,7 +11,7 @@
 
       <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" 
         class="FilmsSection" v-if="filmsList.length > 0" 
-        :section-title="'TOUR FILMS'" :films-list-data="filmsList" />
+        :section-title="'YOUR FILMS'" :films-list-data="filmsList" />
 
       <!-- trending films/series -->
       <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" class="FilmsSection" 
