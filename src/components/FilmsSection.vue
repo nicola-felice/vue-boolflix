@@ -110,6 +110,7 @@ export default {
 <style scoped lang="scss">  
   section {
     padding-top: 1.25rem;
+    background: #141414;
 
     .container_relative {
       position: relative;

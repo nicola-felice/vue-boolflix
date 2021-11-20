@@ -186,6 +186,7 @@ export default {
 
   .FilmsSection:first-of-type {
     margin-top: 6rem;
+    background-color: unset;
     .container_relative {
     background: linear-gradient(0deg, #141414 40%, rgba(0,0,0,0) 100%);       
     }
