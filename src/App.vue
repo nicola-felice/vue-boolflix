@@ -3,16 +3,22 @@
     <Header @searchText="search" />
 
     <main>
-      <Hero />
+      <Hero :hide-video="hideVideo" />
 
-      <FilmsSection class="FilmsSection" v-if="tvSeriesList.length > 0" :section-title="'YOUR TV SERIES'" :films-list-data="tvSeriesList" />
+      <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" 
+        class="FilmsSection" v-if="tvSeriesList.length > 0" 
+        :section-title="'YOUR TV SERIES'" :films-list-data="tvSeriesList" />
 
-      <FilmsSection class="FilmsSection" v-if="filmsList.length > 0" :section-title="'TOUR FILMS'" :films-list-data="filmsList" />
+      <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" 
+        class="FilmsSection" v-if="filmsList.length > 0" 
+        :section-title="'TOUR FILMS'" :films-list-data="filmsList" />
 
       <!-- trending films/series -->
-      <FilmsSection class="FilmsSection" :section-title="'TRENDING TV SERIES'" :films-list-data="trendingTvSeries" />
+      <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" class="FilmsSection" 
+        :section-title="'TRENDING TV SERIES'" :films-list-data="trendingTvSeries" />
 
-      <FilmsSection class="FilmsSection" :section-title="'TRENDING FILMS'" :films-list-data="trendingMovies" />
+      <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" class="FilmsSection" 
+        :section-title="'TRENDING FILMS'" :films-list-data="trendingMovies" />
 
 
     </main>
@@ -34,6 +40,10 @@ export default {
       tvSeriesList: [],
       trendingMovies: [],
       trendingTvSeries: [],
+
+      // every time this value change
+      // hide hero trailer
+      hideVideo: false,
     }
   },
   components: {
@@ -161,7 +171,7 @@ export default {
       list = list.filter( elm => elm.backdrop_path != null );
 
       this.trendingMovies = list;
-    }
+    },
   },
   created() {
     this.suggestedSeriesRequets();

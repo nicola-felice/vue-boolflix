@@ -8,6 +8,10 @@
           :player-vars="playerVars" tabindex="-1" @error="onVideoError" style="height: 100%;">
         </youtube>        
       </div>
+      <button @click="toggleAudio" id="btn_audio_controls">
+        <font-awesome-icon v-if="isVideoMuted" class="icon" :icon="volumeOff" />
+        <font-awesome-icon v-else class="icon" :icon="volumeOn" />
+      </button>
     </div>
     <div class="info_wrapper">
       <div class="btn_wrapper">
@@ -41,7 +45,7 @@
 </template>
 
 <script>
-import { faPlay, faPlus, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faVolumeMute, faPlay, faPlus, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -64,6 +68,8 @@ export default {
       likeIcon: faThumbsUp,
       dislikeIcon: faThumbsDown,
       chevrondown: faChevronDown,
+      volumeOn: faVolumeUp,
+      volumeOff: faVolumeMute,
 
       // film data
       imgUrl: null,
@@ -78,6 +84,7 @@ export default {
         mute: 1,
         controls: 0,
       },
+      isVideoMuted: true,
 
       // timeouts
       timeouts: [],
@@ -92,7 +99,7 @@ export default {
 
       this.timeouts.push(setTimeout( () => {
         this.$refs.poster.style.opacity = '0';
-      }, 2000));
+      }, 1500));
     },
     onVideoError() {
       this.timeouts.forEach( elm => {
@@ -106,7 +113,10 @@ export default {
 
       this.$refs.poster.src = '#';
 
+      // stop video and mute player
       this.$refs.yt.player.stopVideo();
+      this.$refs.yt.player.mute();
+      this.isVideoMuted = true;
 
       // reset styles and timeouts
       this.$refs.video_container.style.opacity = '0';
@@ -149,7 +159,17 @@ export default {
       this.timeouts.push(setTimeout(() => {
         this.displayVideo();
       }, 3000));
-    }
+    },
+    toggleAudio() {
+      if ( this.isVideoMuted ) {
+        this.$refs.yt.player.unMute();
+        this.isVideoMuted = false;
+      } else {
+        this.$refs.yt.player.mute();
+        this.isVideoMuted = true;
+      }
+      console.log('hey bro')
+    },
   },
 
   watch: {
@@ -367,6 +387,27 @@ export default {
       height: 100%;
       position: absolute;
       z-index: 2;
+    }
+  }
+
+  #btn_audio_controls {
+    position: absolute;
+    bottom: 1rem;
+    right: 1.75rem;
+    z-index: 7;
+    cursor: pointer;
+
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    color: #ffffff75;
+    font-size: 1rem;
+
+    background-color: transparent;
+    border: 1px solid #ffffff75;
+    transition: background-color 50ms ease-in-out;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.233);
     }
   }
 }

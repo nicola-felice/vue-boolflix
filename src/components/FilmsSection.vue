@@ -54,6 +54,9 @@ export default {
 
   methods: {
     showPreview(coordinates, filmData){
+      // hide hero video before showing the preview
+      this.$emit('hideHeroTrailer');
+
       this.cardHoverData = filmData;
       this.cardHoverPosition = coordinates;
     },

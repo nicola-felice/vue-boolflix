@@ -1,5 +1,5 @@
 <template>
-  <div id="hero">
+  <div id="hero" @mousemove="displayVideo">
     <div ref="imgInfoTrailer" class="imgInfoTrailer show" 
       :style="`background-image: url('https://image.tmdb.org/t/p/original${imgId}');`">
     </div>
@@ -20,9 +20,9 @@
     </div>
 
     <youtube :video-id="videoId" ref="yt" id="yt"
-      :player-vars="playerVars"
-      tabindex="-1" style='pointer-events: none;position: absolute;z-index: -2;bottom: 0;top: -55%;min-width: 100vw;height: 200%;'
-      @error="onVideoError" @ready="onPlayerReady">
+      :player-vars="playerVars" tabindex="-1" 
+      style='pointer-events: none;position: absolute;z-index: -2;bottom: 0;top: -55%;min-width: 100vw;height: 200%;'
+      @error="onVideoError">
     </youtube>
 
     <button @click="toggleAudio" id="btn_audio_controls">
@@ -44,6 +44,21 @@ export default {
     FontAwesomeIcon,
   },
 
+  props: ['hideVideo'],
+
+  watch: {
+    hideVideo() {
+      this.$refs.imgInfoTrailer.classList.add('show');
+      this.$refs.overview.classList.add('show');
+
+      this.$refs.yt.player.pauseVideo();
+
+      this.timeouts.forEach( elm => {
+        clearTimeout(elm);
+      });
+    }
+  },
+
   data() {
     return {
       isVideoMuted: true,
@@ -58,7 +73,7 @@ export default {
       // video player
       videoId: null,
       playerVars: {
-        autoplay: 1,
+        autoplay: 0,
         mute: 1,
         controls: 0,
       },
@@ -76,32 +91,28 @@ export default {
   },
 
   methods: {
-    onPlayerReady() {
+    displayVideo() {
+      this.$refs.yt.player.playVideo();
+
+      // hide the img to show the video
       this.timeouts.push(setTimeout(() => {
-        // set video on start
-        this.$refs.yt.player.seekTo(0);
+        this.$refs.imgInfoTrailer.classList.remove('show');
+        this.$refs.overview.classList.remove('show');
+      }, 1500));
 
-        // hide the img to show the video
+      // set a timer to the lenght of the video
+      // when video ends show img again
+      this.$refs.yt.player.getDuration().then(durationVideo => {
         this.timeouts.push(setTimeout(() => {
-          this.$refs.imgInfoTrailer.classList.remove('show');
-          this.$refs.overview.classList.remove('show');
-        }, 1500));
-
-        // set a timer to the lenght of the video
-        // when video ends show img again
-        this.$refs.yt.player.getDuration().then(durationVideo => {
-          this.timeouts.push(setTimeout(() => {
-            this.$refs.imgInfoTrailer.classList.add('show');
-            this.$refs.overview.classList.add('show');
-          }, (durationVideo * 1000) - 4500));
-        }); 
-
-      }, 5000));
+          this.$refs.imgInfoTrailer.classList.add('show');
+          this.$refs.overview.classList.add('show');
+        }, (durationVideo * 1000) - 4500));
+      }); 
     },
     onVideoError() {
       this.timeouts.forEach( elm => {
         clearTimeout(elm);
-      }),
+      });
       this.$refs.imgInfoTrailer.classList.add('show');
       this.$refs.overview.classList.add('show');
       console.error('video not found or unable to play');
@@ -138,13 +149,11 @@ export default {
         }
       });
 
-      // ??
       if ( this.targetFilm == null ) {
         this.videoRequest();
       } else {
         this.targetFilm = targetFilm;
       }
-      // ??
     },
   },
 
@@ -256,7 +265,7 @@ export default {
     background-position: center;
     background-size: cover;
 
-    transition: opacity 500ms linear;
+    transition: opacity 300ms linear;
     &.show {
       opacity: 1;
     }
