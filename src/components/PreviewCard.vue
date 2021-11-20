@@ -99,7 +99,7 @@ export default {
 
       this.timeouts.push(setTimeout( () => {
         this.$refs.poster.style.opacity = '0';
-      }, 1500));
+      }, 1000));
     },
     onVideoError() {
       this.timeouts.forEach( elm => {

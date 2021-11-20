@@ -98,13 +98,15 @@ export default {
       this.isVideoMuted = true;
     },
     async displayVideo() {
-      this.$refs.yt.player.playVideo();
-
       // hide the img to show the video
       this.timeouts.push(setTimeout(() => {
+        this.$refs.yt.player.playVideo();
         this.$refs.imgInfoTrailer.classList.remove('show');
+      }, 3000));
+
+      this.timeouts.push(setTimeout(() => {
         this.$refs.overview.classList.remove('show');
-      }, 1500));
+      }, 15000));
     },
     onVideoError() {
       this.timeouts.forEach( elm => {
