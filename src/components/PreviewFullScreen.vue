@@ -69,6 +69,7 @@ export default {
     closeFullPreview() {
       document.querySelector('body').classList.remove('blur');
       document.querySelector('#full_screen_preview').classList.remove('show');
+      this.$refs.yt.player.pauseVideo();
     },
   },
 }

@@ -182,7 +182,10 @@ export default {
       this.trendingMovies = list;
     },
     showFullScreenPreview(val) {
-      this.fullscreenVideoData = val;
+      this.fullscreenVideoData = null;
+      setTimeout(() => {
+        this.fullscreenVideoData = val;      
+      }, 0);
     }
   },
   created() {
