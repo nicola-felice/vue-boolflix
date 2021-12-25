@@ -1,6 +1,7 @@
 <template>
   <div id="preview" ref="preview" @mouseleave="onMouseLeave" 
-      @mouseenter="setImageSrc(filmData.backdrop_path), videoRequest(filmData.id, filmData.media_type)">
+      @mouseenter="setImageSrc(filmData.backdrop_path), videoRequest(filmData.id, filmData.media_type)" 
+      @click="onClick">
     <div class="img_wrapper">
       <img ref="poster" src="#" alt="" @load="expandPreview">
       <div class="video_container" ref="video_container">
@@ -8,9 +9,9 @@
           :player-vars="playerVars" tabindex="-1" @error="onVideoError" style="height: 100%;">
         </youtube>        
       </div>
-      <button @click="toggleAudio" id="btn_audio_controls">
-        <font-awesome-icon v-if="isVideoMuted" class="icon" :icon="volumeOff" />
-        <font-awesome-icon v-else class="icon" :icon="volumeOn" />
+      <button @click="toggleAudio" id="btn_audio_controls" class="toggle_audio">
+        <font-awesome-icon v-if="isVideoMuted" class="icon toggle_audio" :icon="volumeOff" />
+        <font-awesome-icon v-else class="icon toggle_audio" :icon="volumeOn" />
       </button>
     </div>
     <div class="info_wrapper">
@@ -158,7 +159,7 @@ export default {
 
       this.timeouts.push(setTimeout(() => {
         this.displayVideo();
-      }, 3000));
+      }, 2500));
     },
     toggleAudio() {
       if ( this.isVideoMuted ) {
@@ -169,6 +170,17 @@ export default {
         this.isVideoMuted = true;
       }
     },
+    onClick(e) {
+      const eventTarget = e.target;
+      const isTargetAudioBtn = eventTarget.classList.contains('toggle_audio') || 
+                                eventTarget.parentNode.classList.contains('toggle_audio');
+
+      if ( isTargetAudioBtn ) {
+        return;
+      }
+
+      this.$emit('fullPreviewData', this.filmData);
+    }
   },
 
   watch: {
@@ -368,6 +380,9 @@ export default {
           border: #fff 2px solid;
         }
       }
+    }
+    @media screen and (max-width: 1000px) {
+       
     }
 
     .img_wrapper {
