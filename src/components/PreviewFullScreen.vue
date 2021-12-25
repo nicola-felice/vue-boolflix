@@ -32,6 +32,11 @@ export default {
       if (val == undefined || val == null) {
         return;
       }
+
+      const screenWidth = document.querySelector('body').clientWidth;
+      if ( screenWidth > 1000 ) {
+        return;
+      }
       
       this.videoRequest(this.filmData.id).then( (res) => {
         const videoExists = res;
