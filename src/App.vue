@@ -6,21 +6,25 @@
       <Hero :hide-video="hideVideo" />
 
       <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" 
+        @fullPreviewData="showFullScreenPreview"
         class="FilmsSection" v-if="tvSeriesList.length > 0" 
         :section-title="'YOUR TV SERIES'" :films-list-data="tvSeriesList" />
 
       <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" 
+        @fullPreviewData="showFullScreenPreview"
         class="FilmsSection" v-if="filmsList.length > 0" 
         :section-title="'YOUR FILMS'" :films-list-data="filmsList" />
 
       <!-- trending films/series -->
       <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" class="FilmsSection" 
+        @fullPreviewData="showFullScreenPreview"
         :section-title="'TRENDING TV SERIES'" :films-list-data="trendingTvSeries" />
 
       <FilmsSection @hideHeroTrailer="hideVideo ? hideVideo = false : hideVideo = true" class="FilmsSection" 
+        @fullPreviewData="showFullScreenPreview"
         :section-title="'TRENDING FILMS'" :films-list-data="trendingMovies" />
 
-
+      <PreviewFullScreen :film-data="fullscreenVideoData" />
     </main>
   </div>
 </template>
@@ -30,6 +34,7 @@ import axios from 'axios';
 import Header from './components/Header.vue';
 import FilmsSection from './components/FilmsSection.vue';
 import Hero from './components/Hero.vue';
+import PreviewFullScreen from './components/PreviewFullScreen.vue';
 
 export default {
   name: 'App',
@@ -44,12 +49,16 @@ export default {
       // every time this value change
       // hide hero trailer
       hideVideo: false,
+
+      // full screen preview prop 
+      fullscreenVideoData: null,
     }
   },
   components: {
     Header,
     FilmsSection,
     Hero,
+    PreviewFullScreen,
   },
   methods: {
     async search(input) {
@@ -172,6 +181,9 @@ export default {
 
       this.trendingMovies = list;
     },
+    showFullScreenPreview(val) {
+      this.fullscreenVideoData = val;
+    }
   },
   created() {
     this.suggestedSeriesRequets();
@@ -187,8 +199,45 @@ export default {
   .FilmsSection:first-of-type {
     margin-top: 6rem;
     background-color: unset;
-    .container_relative {
-    background: linear-gradient(0deg, #141414 40%, rgba(0,0,0,0) 100%);       
+    @media screen and (max-width: 1100px) {
+      margin-top: 4.5rem;  
+    } 
+    @media screen and (max-width: 750px) {
+      margin-top: 2rem;  
+    } 
+    @media screen and (max-width: 600px) {
+      margin-top: 0;
     }
+    .container_relative {
+      background: linear-gradient(0deg, #141414 40%, rgba(0,0,0,0) 100%);  
+      @media screen and (max-width: 1100px) {
+        background: linear-gradient(0deg, #141414 65%, rgba(0,0,0,0) 100%);  
+      } 
+      @media screen and (max-width: 600px) {
+        background: linear-gradient(0deg, #141414 85%, rgba(0,0,0,0) 100%);  
+      }     
+    }
+  }
+
+
+  @media screen and (max-width: 600px) {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    html::-webkit-scrollbar {
+      display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    html {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    } 
+  }
+
+  @media screen and (max-width: 600px) {
+    body.blur {
+      #hero,
+      section {
+        filter: blur(2px);
+      }
+    }    
   }
 </style>

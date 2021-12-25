@@ -1,5 +1,5 @@
 <template>
-  <li @mouseenter="onHover" @mouseleave="onMouseLeave" 
+  <li @mouseenter="onHover" @mouseleave="onMouseLeave" @click="onClick"
     id="film_card" ref="film_card" class="film_card">
     <div class="poster_wrapper">
       <img class="poster" :src="imageSource" alt="">
@@ -32,6 +32,9 @@ export default {
     onMouseLeave() {
       // if mouse leave clear timeout 
       clearTimeout(this.hoverTimeout);
+    },
+    onClick() {
+      this.$emit('fullPreviewData', this.filmData);
     }
   },
 
@@ -56,11 +59,36 @@ export default {
 #film_card:first-child {
   margin: 1rem 0;
   margin-left: 3rem;
+  @media screen and (max-width: 700px) {
+    & {
+      margin-left: 1.5rem;
+    }
+  }
 }
 .poster_wrapper {
   width: 15vw;
   padding: 0 .17rem;
   position: relative;
+  @media screen and (max-width: 850px) {
+    & {
+      width: 20vw;
+    }
+  }
+  @media screen and (max-width: 700px) {
+    & {
+      width: 25vw;
+    }
+  }
+  @media screen and (max-width: 550px) {
+    & {
+      width: 35vw;
+    }
+  }
+  @media screen and (max-width: 450px) {
+    & {
+      width: 45vw;
+    }
+  }
 }
 .poster {
   cursor: pointer;

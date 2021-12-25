@@ -170,6 +170,11 @@ export default {
     margin-bottom: 2rem;
     overflow: hidden;
     margin-bottom: -20%;
+    @media screen and (max-width: 750px) {
+      & {
+        min-height: 75vh;
+      }
+    }
   }
   .details_wrapper {
     position: absolute;
@@ -178,7 +183,24 @@ export default {
     margin-left: 3vw;
     width: 35%;
     color: #fff;
-    h2 {
+    @media screen and (max-width: 1250px) {
+      & {
+        width: 45%;
+      }
+    }
+    @media screen and (max-width: 900px) {
+      & {
+        width: 65%;
+        bottom: 30%;
+        margin-left: 5vw;
+      }
+    }
+    @media screen and (max-width: 500px) {
+      & {
+        width: unset;
+      }
+    }
+    #title {
       font-size: 3.5vw;
       line-height: 3.4rem;
       margin-bottom: .75rem;
@@ -204,6 +226,18 @@ export default {
         background-size: contain;
         background-image: url('../assets/netflix.png');
       }
+      @media screen and (max-width: 900px) {
+        & {
+          font-size: calc(1.5rem + 2vw);
+        }
+      }
+      @media screen and (max-width: 750px) {
+        & {
+          font-size: 2rem;
+          line-height: 2.25rem;
+          padding-right: 1rem;
+        }
+      }
     }
     #overview {
       font-size: 1.35vw;
@@ -221,6 +255,11 @@ export default {
         margin-bottom: .75rem;
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;  
+        @media screen and (max-width: 1250px) {
+          & {
+            display: none;
+          }
+        }
       }
     }
     button {
@@ -235,6 +274,19 @@ export default {
       border: transparent;
       display: inline-flex;
       align-items: center;
+      @media screen and (max-width: 1250px) {
+        & {
+          font-size: .9rem;
+          padding: .75rem 2rem;
+        }
+      }
+      @media screen and (max-width: 750px) {
+        & {
+          font-size: .8rem;
+          padding: .75rem 1.6rem;
+          margin-top: .5rem;
+        }
+      }
       &:hover {
         background-color: rgba(255, 255, 255, 0.76);
       }
@@ -284,6 +336,11 @@ export default {
     background-color: transparent;
     border: 1px solid #fff;
     transition: background-color 50ms ease-in-out;
+    @media screen and (max-width: 1000px) {
+      & {
+        display: none;
+      }
+    }
     &:hover {
       background-color: rgba(255, 255, 255, 0.315);
     }

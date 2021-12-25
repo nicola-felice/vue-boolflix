@@ -8,7 +8,9 @@
         </div>
 
         <ul>
-          <film-card @previewData="showPreview" v-for="(elm, index) in filmsListData" :key="index" :film-data="elm" />
+          <film-card @fullPreviewData="_fullPreviewData" 
+            @previewData="showPreview" :film-data="elm"
+            v-for="(elm, index) in filmsListData" :key="index"  />
         </ul>
 
         <div @click="scrollRight" ref="arrow_right" class="arrow_right hide">
@@ -17,7 +19,7 @@
       </div>
     </div>
     <!-- hover card component -->
-    <preview-card :position="cardHoverPosition" :film-data="cardHoverData" />
+    <preview-card :position="cardHoverPosition" :film-data="cardHoverData" @fullPreviewData="_fullPreviewData" />
   </section>
 </template>
 
@@ -103,6 +105,9 @@ export default {
       const filmListWrapper = this.$refs.films_list_wrapper;
       filmListWrapper.scrollLeft -= window.innerWidth / 1.5;
     },
+    _fullPreviewData(val) {
+      this.$emit('fullPreviewData', val)
+    }
   },
 }
 </script>
@@ -181,6 +186,11 @@ export default {
   h3 {
     color: white;
     margin-left: 3rem;
+    @media screen and (max-width: 700px) {
+      & {
+        margin-left: 1.5rem;
+      }
+    }
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
