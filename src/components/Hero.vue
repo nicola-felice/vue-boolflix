@@ -98,6 +98,11 @@ export default {
       this.isVideoMuted = true;
     },
     async displayVideo() {
+      const screenWidth = document.querySelector('body').clientWidth;
+      if ( screenWidth < 1000 ) {
+        return;
+      }
+
       // hide the img to show the video
       this.timeouts.push(setTimeout(() => {
         this.$refs.yt.player.playVideo();
