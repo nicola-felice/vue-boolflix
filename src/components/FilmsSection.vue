@@ -91,6 +91,11 @@ export default {
       }, 150);
     },
     onHover() {
+      const screenWidth = document.querySelector('body').clientWidth;
+      if ( screenWidth < 900 ) {
+        return;
+      }
+
       this.checkArrowVisibility();
     },
     hideArrows() {
