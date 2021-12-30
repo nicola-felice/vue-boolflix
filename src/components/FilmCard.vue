@@ -11,7 +11,6 @@
 
 export default {
   name: 'FilmCard', 
-
   props:['filmData'],
 
   data() {
@@ -23,7 +22,6 @@ export default {
   methods: {
     onHover(e) {
       const COORDINATES = e.target.getBoundingClientRect();
-
       // emit after 1 second of hovering
       this.hoverTimeout = setTimeout(() => {
         this.$emit('previewData', COORDINATES, this.filmData);
