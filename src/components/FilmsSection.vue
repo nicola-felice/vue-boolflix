@@ -3,21 +3,25 @@
     <h3>{{sectionTitle}}</h3>
     <div class="container_relative" @mouseover="onHover" @mouseleave="hideArrows">
       <div ref="films_list_wrapper" class="films_list_wrapper" @scroll="isScrollEnded">
+        <!-- arrow scroll left -->
         <div @click="scrollLeft" ref="arrow_left" class="arrow_left">
           <font-awesome-icon class="icon" :icon="arrowL" />
         </div>
 
         <ul>
+          <!-- film cards list -->
           <film-card @fullPreviewData="_fullPreviewData" 
             @previewData="showPreview" :film-data="elm"
             v-for="(elm, index) in filmsListData" :key="index"  />
         </ul>
 
+        <!-- arrow scroll right -->
         <div @click="scrollRight" ref="arrow_right" class="arrow_right hide">
           <font-awesome-icon class="icon" :icon="arrowR" />
         </div>
       </div>
     </div>
+
     <!-- hover card component -->
     <preview-card :position="cardHoverPosition" :film-data="cardHoverData" @fullPreviewData="_fullPreviewData" />
   </section>
@@ -67,10 +71,12 @@ export default {
       const leftArrowDomElm = this.$refs.arrow_left;
       const rightArrowDomElm = this.$refs.arrow_right;
 
+      // show both arrows
       leftArrowDomElm.classList.add("show");
       rightArrowDomElm.classList.remove("hide");
 
       const screenWidth = document.querySelector("html").clientWidth;
+
       const canScrollToRight = (filmListWrapper.scrollLeft + 30) < (filmListWrapper.scrollWidth - screenWidth - 10);
       if ( !canScrollToRight ) {
         rightArrowDomElm.classList.add("hide");
@@ -91,6 +97,7 @@ export default {
       }, 150);
     },
     onHover() {
+      // never display scroll arrows on small screens
       const screenWidth = document.querySelector('body').clientWidth;
       if ( screenWidth < 900 ) {
         return;
